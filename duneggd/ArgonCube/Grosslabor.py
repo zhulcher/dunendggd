@@ -14,7 +14,7 @@ class GrosslaborBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,halfDimension,cryoDimension,pitDimension,Material,**kwargs):
+    def configure(self,halfDimension,cryoDimension,roofDimension,pitDimension,Material,**kwargs):
 
         # Read dimensions form config file
         self.halfDimension      = halfDimension
@@ -22,6 +22,8 @@ class GrosslaborBuilder(gegede.builder.Builder):
         self.cryo_rmax          = cryoDimension['r_max']
         self.cryo_rmin          = cryoDimension['r_min']
         self.cryo_dy            = cryoDimension['dy']
+
+        self.roof_dy            = roofDimension['dy']
 
         self.pit_dx             = pitDimension['dx']
         self.pit_dy             = pitDimension['dy']
@@ -32,6 +34,7 @@ class GrosslaborBuilder(gegede.builder.Builder):
         self.Tube_Material      = 'Steel'
         self.Pit_Material       = 'Air'
         self.Concrete_Material  = 'ReifConcrete'
+        self.Roof_Material      = 'ReifConcrete'
 
 
         # Subbuilders
@@ -52,6 +55,28 @@ class GrosslaborBuilder(gegede.builder.Builder):
         print('GrosslaborBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
+
+        # Construct Roof Volume
+        Roof_shape = geom.shapes.Box('Roof_shape',
+                                        dx = self.halfDimension['dx'],
+                                        dy = self.roof_dy,
+                                        dz = self.halfDimension['dz'])
+
+        Roof_lv = geom.structure.Volume('volRoof',
+                                        material=self.Roof_Material,
+                                        shape=Roof_shape)
+
+        # Place Roof Volume inside Grosslabor volume
+        pos = [Q('0cm'),self.halfDimension['dy']-Roof_shape.dy,Q('0cm')]
+
+        Roof_pos = geom.structure.Position('Roof_pos',
+                                                pos[0],pos[1],pos[2])
+
+        Roof_pla = geom.structure.Placement('Roof_pla',
+                                                volume=Roof_lv,
+                                                pos=Roof_pos)
+
+        main_lv.placements.append(Roof_pla.name)
 
         # Construct Concrete Volume
         Concrete_shape = geom.shapes.Box('Concrete_shape',

@@ -1,0 +1,2 @@
+/vis/set/touchable volWorld_PV 0 volDetEnclosure_PV 0 volGrosslabor_PV 0 volConcrete_PV 0 volPit_PV 0 volCryoTube_PV 0 volLArFill_PV 0 volBucket_PV 0 volG10Side_PV 0 volLArPhaseG10Side_PV 0 volInnerDetector_PV 0 volHalfDetector_PV 0 volFieldcage_PV 0 volLAr_PV 0 volTPC_PV 0 volTPCPlane_PV 0
+/vis/touchable/dump

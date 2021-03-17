@@ -44,7 +44,7 @@ void materialDisplay(TString filename,Bool_t checkoverlaps=kFALSE,TString label=
     }
     if ( TString(volume->GetMaterial()->GetName()).Contains("Air"))
     {
-      volume->SetVisibility(kFALSE);
+      //volume->SetVisibility(kFALSE);
       continue;
     }
     Int_t daughters = volume->GetNdaughters();
