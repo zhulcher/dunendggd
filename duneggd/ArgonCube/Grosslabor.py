@@ -48,7 +48,7 @@ class GrosslaborBuilder(gegede.builder.Builder):
         """
 
         self.halfDimension  = { 'dx':   self.halfDimension['dx'],
-                                'dy':   self.halfDimension['dy'],
+                                'dy':   2*self.halfDimension['dy']+self.Module_builder.halfDimension['dy']+2*self.roof_dy,
                                 'dz':   self.halfDimension['dz']}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')

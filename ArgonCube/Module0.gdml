@@ -5134,9 +5134,9 @@
     <position name="Flange_pos" unit="cm" x="0" y="86.8426" z="0"/>
     <position name="HVFeedThrough_pos" unit="cm" x="0" y="-16.2263" z="0"/>
     <rotation name="HVFeedThrough_rot" unit="degree" x="90.0" y="0.0" z="0.0"/>
-    <position name="Roof_pos" unit="cm" x="0" y="975.0" z="0"/>
-    <position name="Concrete_pos" unit="cm" x="0" y="-449.43965" z="0"/>
-    <position name="Pit_pos" unit="cm" x="0" y="200.56035" z="0"/>
+    <position name="Roof_pos" unit="cm" x="0" y="926.1207" z="0"/>
+    <position name="Concrete_pos" unit="cm" x="0" y="-425.0" z="0"/>
+    <position name="Pit_pos" unit="cm" x="0" y="176.1207" z="0"/>
     <rotation name="CryoTube_rot" unit="degree" x="90.0" y="0.0" z="0.0"/>
     <position name="CryoTube_pos_A" unit="cm" x="0" y="206.4438" z="0"/>
     <rotation name="LArFill_rot" unit="degree" x="0.0" y="0.0" z="0.0"/>
@@ -5774,9 +5774,9 @@
     <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="Insulation_shape" rmax="0.57" rmin="0.07" startphi="0.0" z="169.7888"/>
     <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="Core_shape" rmax="0.07" rmin="0.0" startphi="0.0" z="169.7888"/>
     <box lunit="cm" name="Module" x="67.0" y="202.2414" z="67.0"/>
-    <box lunit="cm" name="Grosslabor" x="2000.0" y="2000.0" z="2000.0"/>
+    <box lunit="cm" name="Grosslabor" x="2000.0" y="1902.2414" z="2000.0"/>
     <box lunit="cm" name="Roof_shape" x="2000.0" y="50.0" z="2000.0"/>
-    <box lunit="cm" name="Concrete_shape" x="2000.0" y="1101.1207" z="2000.0"/>
+    <box lunit="cm" name="Concrete_shape" x="2000.0" y="1052.2414" z="2000.0"/>
     <box lunit="cm" name="Pit_shape" x="300.0" y="700.0" z="300.0"/>
     <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="CryoTube_shape" rmax="51.0" rmin="0.0" startphi="0.0" z="230.0"/>
     <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="LArFill_shape" rmax="50.0" rmin="0.0" startphi="0.0" z="230.0"/>
