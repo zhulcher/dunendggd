@@ -6,3 +6,8 @@ dunendggd.egg-info
 *~
 *#
 *.bak
+ArgonCube/*.sh
+ArgonCube/geom-test.root
+!ArgonCube/*OptSim*
+!ArgonCube/*2x2*
+!ArgonCube/*Module0*
