@@ -5141,13 +5141,16 @@
     <rotation name="rminus90aboutX" unit="degree" x="-90" y="0" z="0"/>
     <rotation name="r90aboutY" unit="degree" x="0" y="90" z="0"/>
     <rotation name="r180aboutY" unit="degree" x="0" y="180" z="0"/>
+    <rotation name="r180aboutZ" unit="degree" x="0" y="0" z="180"/>
     <rotation name="rminus90aboutY" unit="degree" x="0" y="-90" z="0"/>
     <rotation name="r90aboutZ" unit="degree" x="0" y="0" z="90"/>
     <rotation name="r90aboutXZ" unit="degree" x="90" y="0" z="90"/>
     <rotation name="r90aboutYZ" unit="degree" x="0" y="90" z="90"/>
     <rotation name="r90aboutXminusZ" unit="degree" x="-90" y="0" z="90"/>
     <rotation name="r90aboutYminusZ" unit="degree" x="0" y="-90" z="90"/>
-    <position name="volDetEnclosure_pos" unit="cm" x="0" y="0" z="0"/>
+    <rotation name="r90aboutX90aboutY" unit="degree" x="90" y="90" z="0"/>
+    <rotation name="r90aboutX180aboutY" unit="degree" x="90" y="180" z="0"/>
+    <position name="volDetEnclosure_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
     <rotation name="volDetEnclosure_rot" unit="degree" x="0" y="0" z="0"/>
     <position name="center"/>
     <rotation name="identity"/>
@@ -5156,15 +5159,11 @@
     <element Z="1" formula="H" name="hydrogen">
       <atom value="1.00791"/>
     </element>
-    <isotope N="10" Z="5" name="boron10">
-      <atom type="A" value="10.01"/>
-    </isotope>
     <isotope N="11" Z="5" name="boron11">
       <atom type="A" value="11.0"/>
     </isotope>
     <element name="boron">
-      <fraction n="0.199" ref="boron10"/>
-      <fraction n="0.801" ref="boron11"/>
+      <fraction n="1.0" ref="boron11"/>
     </element>
     <element Z="6" formula="C" name="carbon">
       <atom value="12.0107"/>
@@ -5220,6 +5219,9 @@
     <element Z="28" formula="Ni" name="nickel">
       <atom value="58.6934"/>
     </element>
+    <element Z="74" formula="W" name="tungsten">
+      <atom value="183.84"/>
+    </element>
     <isotope N="63" Z="29" name="copper63">
       <atom type="A" value="62.93"/>
     </isotope>
@@ -5238,9 +5240,6 @@
     </element>
     <element Z="35" formula="Br" name="bromine">
       <atom value="79.904"/>
-    </element>
-    <element Z="51" formula="Sb" name="antimony">
-      <atom value="121.76"/>
     </element>
     <element Z="54" formula="Xe" name="xenon">
       <atom value="131.293"/>
@@ -5330,6 +5329,12 @@
       <fraction n="0.209476" ref="oxygen"/>
       <fraction n="0.00934" ref="argon"/>
     </material>
+    <material formula="" name="Air35C">
+      <D value="0.00115"/>
+      <fraction n="0.781154" ref="nitrogen"/>
+      <fraction n="0.209476" ref="oxygen"/>
+      <fraction n="0.00934" ref="argon"/>
+    </material>
     <material formula="" name="Bakelite">
       <D value="1.25"/>
       <fraction n="0.057441" ref="hydrogen"/>
@@ -5353,6 +5358,16 @@
     </material>
     <material formula="" name="stGas_Xe">
       <D value="0.00469254464286"/>
+      <fraction n="0.3" ref="CO2"/>
+      <fraction n="0.7" ref="argon"/>
+    </material>
+    <material formula="" name="stGas_Xe19">
+      <D value="0.00891583482143"/>
+      <fraction n="0.3" ref="CO2"/>
+      <fraction n="0.7" ref="argon"/>
+    </material>
+    <material formula="" name="straw_avg_ArXe">
+      <D value="0.020918592"/>
       <fraction n="0.3" ref="CO2"/>
       <fraction n="0.7" ref="argon"/>
     </material>
@@ -5387,11 +5402,29 @@
       <fraction n="0.3" ref="CO2"/>
       <fraction n="0.7" ref="argon"/>
     </material>
+    <material formula="" name="stGas_Ar19">
+      <D value="0.00349192857143"/>
+      <fraction n="0.3" ref="CO2"/>
+      <fraction n="0.7" ref="argon"/>
+    </material>
+    <material formula="" name="carbonComposite">
+      <D value="0.65"/>
+      <fraction n="0.99" ref="carbon"/>
+      <fraction n="0.01" ref="hydrogen"/>
+    </material>
     <material formula="" name="Kapton">
       <D value="1.4"/>
       <composite n="22" ref="carbon"/>
       <composite n="5" ref="oxygen"/>
       <composite n="2" ref="nitrogen"/>
+    </material>
+    <material formula="" name="Tungsten">
+      <D value="19.3"/>
+      <composite n="1" ref="tungsten"/>
+    </material>
+    <material formula="" name="Gold">
+      <D value="19.3"/>
+      <composite n="1" ref="gold"/>
     </material>
     <material formula="" name="Iron">
       <D value="7.874"/>
@@ -5662,10 +5695,6 @@
       <fraction n="0.206" ref="Epoxy"/>
       <fraction n="0.794" ref="Glass"/>
     </material>
-    <material formula="" name="Gold">
-      <D value="19.32"/>
-      <composite n="1" ref="gold"/>
-    </material>
     <material formula="" name="Silicon">
       <D value="2.33"/>
       <composite n="1" ref="silicon"/>
@@ -5765,7 +5794,7 @@
     <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="Core_shape" rmax="0.07" rmin="0.0" startphi="0.0" z="169.7888"/>
     <box lunit="cm" name="Module" x="67.0" y="202.2414" z="67.0"/>
     <box lunit="cm" name="DetEnclosure" x="2000.0" y="2000.0" z="2000.0"/>
-    <box lunit="cm" name="World" x="40000.0" y="40000.0" z="40000.0"/>
+    <box lunit="cm" name="World" x="60000.0" y="60000.0" z="60000.0"/>
   </solids>
   <structure>
     <volume name="volLArVol1">
@@ -31568,7 +31597,7 @@
       </physvol>
     </volume>
     <volume name="volWorld">
-      <materialref ref="Rock"/>
+      <materialref ref="NoGas"/>
       <solidref ref="World"/>
       <physvol copynumber="0">
         <volumeref ref="volDetEnclosure"/>

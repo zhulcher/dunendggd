@@ -25,7 +25,6 @@ def define_materials( g ):
     fe = g.matter.Element("iron",       "Fe", 26, "55.8450*g/mole")
     ni = g.matter.Element("nickel",     "Ni", 28, "58.6934*g/mole")
     w = g.matter.Element("tungsten",    "W", 74, "183.84*g/mole")
-    au = g.matter.Element("gold",       "Au", 79, "196.966*g/mole")
 
 #    cu = g.matter.Element("copper",     "Cu", 29, "63.546*g/mole")
     cu63=g.matter.Isotope("copper63", 29, 63, "62.93*g/mole")
@@ -151,7 +150,7 @@ def define_materials( g ):
     straw_avg_ArXe = g.matter.Mixture("straw_avg_ArXe", density = "0.020918592*g/cc",
                                        components = (
                                            ("CO2",    0.3),
-                                           ("argon",  0.7)                                    
+                                           ("argon",  0.7)
                                        ))
     # Materials for the targets and st planes following
     H2O      = g.matter.Molecule("Water",       density="1.0*kg/l",   elements=(("oxygen",1),("hydrogen",2)))
@@ -532,9 +531,6 @@ def define_materials( g ):
                                     ("Epoxy",0.206),
                                     ("Glass",0.794)
                             ))
-
-    # Pixelboard pads
-    gold = g.matter.Molecule("Gold",    density="19.32*g/cc",  elements=(("gold",1),))
 
     # Pixelboard ASICs
     silicon = g.matter.Molecule("Silicon",    density="2.33*g/cc",  elements=(("silicon",1),))
