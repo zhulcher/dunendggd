@@ -1,0 +1,19 @@
+name: Automated tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup
+      run: pip install .
+    - name: Build defaul gdml
+      run: ./build_hall.sh
