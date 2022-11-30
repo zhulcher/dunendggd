@@ -10,7 +10,7 @@ setup(name = 'dunendggd',
       package_dir = {},
       packages = ['duneggd', 'duneggd.Det', 'duneggd.SubDetector', 'duneggd.Component', 'duneggd.Active', 'duneggd.LocalTools', 'duneggd.Booleans', 'duneggd.Hall', 'duneggd.ArgonCube'],
       install_requires = [
-        "gegede >= 0.4",
+        "gegede >= 0.7",
         "pint >= 0.5.1",      # for units
         "lxml >= 3.3.5",      # for GDML export],
       ],
