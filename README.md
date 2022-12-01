@@ -5,7 +5,20 @@ This is a tool to build proposal geometries for DUNE near detector.
 dunendggd is based on [GeGeDe](https://github.com/brettviren/gegede) and started out as [gyang9/dunendggd](https://github.com/gyang9/dunendggd).
 
 # Setup
-This package could be installed as user, on unix environment:
+
+## Prerequisites
+
+This package requires `gegede`.
+Unfortunately, the latest version of `gegede` which supports Python 3 [is _not_ on PyPI](https://github.com/brettviren/gegede/issues/18) yet.
+This means we have to install a suitable version directly from GitHub:
+
+```bash
+pip install git+https://github.com/brettviren/gegede.git@86ca28190516a23203cd883aafb0548a61664ceb
+```
+
+## Installing dunendggd
+
+This package can be installed as user using `pip`:
 
 ```bash
 pip install -e .
@@ -17,16 +30,15 @@ Or if you do not have pip on your system and do not want to install it:
 python setup.py develop --user
 ```
 
-Don't forget to check your variable `PATH`
-```bash
-export PATH=~/.local/bin/:${PATH}
-```
-
-As root privileges:
+With root privileges:
 ```bash
 python setup.py develop
 ```
 
+Don't forget to check your variable `PATH`:
+```bash
+export PATH=~/.local/bin/:${PATH}
+```
 
 # Example
 To run an example containing basic detectors, you could process like:
@@ -48,6 +60,6 @@ root -l 'geoDisplay.C("example.gdml")'
 # Contact
 * **dunendggd:**
   * Guang Yang `guang.yang.1@stonybrook.edu`
-  * Jose Palomino`jose.palominogallo@stonybrook.edu`
+  * Jose Palomino `jose.palominogallo@stonybrook.edu`
 * **GeGeDe:**
   * Brett Viren `bviren@bnl.gov`
