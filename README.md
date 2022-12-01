@@ -58,8 +58,8 @@ root -l 'geoDisplay.C("example.gdml")'
 ```
 
 # Contact
-* **dunendggd:**
-  * Guang Yang `guang.yang.1@stonybrook.edu`
-  * Jose Palomino `jose.palominogallo@stonybrook.edu`
-* **GeGeDe:**
-  * Brett Viren `bviren@bnl.gov`
+- **dunendggd:** Package managers
+  - Lukas Koch
+  - Mathew Muether
+- **GeGeDe:**
+  - Brett Viren
