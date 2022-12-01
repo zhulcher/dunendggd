@@ -8,12 +8,20 @@ dunendggd is based on [GeGeDe](https://github.com/brettviren/gegede) and started
 This package could be installed as user, on unix environment:
 
 ```bash
+pip install -e .
+```
+
+Or if you do not have pip on your system and do not want to install it:
+
+```bash
 python setup.py develop --user
 ```
+
 Don't forget to check your variable `PATH`
 ```bash
 export PATH=~/.local/bin/:${PATH}
 ```
+
 As root privileges:
 ```bash
 python setup.py develop
