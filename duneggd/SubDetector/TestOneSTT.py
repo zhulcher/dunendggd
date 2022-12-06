@@ -6,102 +6,124 @@ import time
 
 class TestOneSTTBuilder(gegede.builder.Builder):
 
-    def configure(self, halfDimension=None, Material=None, nBarrelModules=None, configuration=None, liqArThickness=None, TestMode=False, **kwds):
-            self.simpleStraw      	    = False
-            self.sqrt3                  = 1.7320508
-            #        self.start_time=time.time()
-            #        print("start_time:",self.start_time)
-            self.TestMode = TestMode
-            if TestMode:
-                print()
-                print(" !!!!!!! Warning !!!!!! it's test mode, it's quick but miss components ")
-                print()
+    def configure(self, 
+                        # SANDINNERVOLUME
+                        halfDimension=None,     Material=None,            nBarrelModules=None,      configuration=None,     liqArThickness=None,    DistGRAINSTT=None,        DistGRAINECAL=None,       DistSTTECAL=None,
+                        # STT   tracker
+                        nofUpstreamTrkMod=None, nofDownstreamTrkMod=None, nofC3H6ModAfterCMod=None, 
+                        # STRAW TUBE
+                        StrawRadius=None,       DistStrawStraw=None,      DistStrawWall=None,       AngleStrawStraw=None,   StrawBearing=None,      StrawWireWThickness=None, StrawWireGThickness=None, CoatThickness=None, MylarThickness=None, StrawGas=None,
+                        # STT   MODULE
+                        FrameThickness=None,    AddGapForSlab=None,       UpModGap=None,            targetThickness=None,   gap=None,               nofStrawPlanes=None,
+                        **kwds):
+
+            #*******************************************************************| SANDINNERVOLUME |***********************************************************************************
+
             self.halfDimension, self.Material = ( halfDimension, Material )
+            self.kloeVesselRadius             = self.halfDimension['rmax'] #= Q('2m')
+            self.kloeVesselHalfDx             = self.halfDimension['dz'] #= Q('1.69m')
+            self.extRadialgap                 = Q("0cm")
+            self.extLateralgap                = Q("0cm")
+            self.kloeTrkRegRadius             = self.kloeVesselRadius - self.extRadialgap
+            self.kloeTrkRegHalfDx             = self.kloeVesselHalfDx - self.extLateralgap
+            self.nBarrelModules               = nBarrelModules
+            self.rotAngle                     = 0.5 * Q('360deg') / self.nBarrelModules
+            self.liqArThickness               = liqArThickness
+            self.configuration                = configuration
+            self.DistGRAINSTT                 = DistGRAINSTT
+            self.DistGRAINECAL                = DistGRAINECAL
+            self.DistSTTECAL                  = DistSTTECAL
 
-            self.kloeVesselRadius       = self.halfDimension['rmax']
-            self.kloeVesselHalfDx       = self.halfDimension['dz']
-            self.nBarrelModules         = nBarrelModules
-            self.rotAngle               = 0.5 * Q('360deg') / self.nBarrelModules
-            self.liqArThickness         = liqArThickness
-            self.configuration          = configuration
+            #************************************************************************|  STT tracker  |**********************************************************************************
 
-            self.StrawRadius            = Q('4mm')
-            self.DistStrawStraw         = Q('1mm')
-            self.DistStrawWall          = Q('1mm')
-            self.AngleStrawStraw        = Q('60deg')
-            self.StrawRing              = Q('0.5mm')
-            self.StrawWireWThickness    = Q('20um')
-            self.StrawWireGThickness    = Q('20nm')
-            self.CoatThickness          = Q("70nm")
-            self.MylarThickness         = Q("12um")
-            self.StrawGas               = {"CMod" : "stGas_Ar19", "C3H6Mod":"stGas_Xe19", "TrkMod":"stGas_Ar19"}
-            self.planeXXThickness       = 2*(self.StrawRadius + self.StrawRing)*(math.cos(self.AngleStrawStraw/2)+1) + self.DistStrawStraw*math.cos(self.AngleStrawStraw/2) + 2*self.DistStrawWall
+            self.nofUpstreamTrkMod            = nofUpstreamTrkMod
+            self.nofDownstreamTrkMod          = nofDownstreamTrkMod
+            self.nofC3H6ModAfterCMod          = nofC3H6ModAfterCMod
+            self.AvailableUpstreamSpace       = self.kloeTrkRegRadius - self.liqArThickness - self.DistGRAINSTT - self.DistGRAINECAL
+            self.AvalilableDowstreamSpace     = self.kloeTrkRegRadius - self.DistSTTECAL
 
-            #self.kloeVesselRadius       = Q('2m')
-            #self.kloeVesselHalfDx       = Q('1.69m')
-            self.extRadialgap           = Q("0cm")
-            self.extLateralgap          = Q("0cm")
-            self.kloeTrkRegRadius       = self.kloeVesselRadius - self.extRadialgap
-            self.kloeTrkRegHalfDx       = self.kloeVesselHalfDx - self.extLateralgap
-            self.FrameThickness         = Q("8cm")
-            self.AddGapForSlab          = Q("7cm")
-            self.UpModGap               = Q("4mm")
-            self.halfUpModGap           = self.UpModGap/2.
+            #************************************************************************|   STRAWTUBE   |**********************************************************************************
 
-            self.targetThickness        = {"CMod" : Q("4mm"),    "C3H6Mod": Q("5mm"), "TrkMod":Q("0mm")}
-            self.gap                    = {"CMod" : Q("4.67mm"), "C3H6Mod": Q("0mm"), "TrkMod":Q("4.67mm")}
-            self.nofStrawPlanes         = {"CMod" : 2,           "C3H6Mod": 2,        "TrkMod":3}
-            self.GetModThickness        = lambda mod_type : self.gap[mod_type]*2 + self.targetThickness[mod_type] + self.nofStrawPlanes[mod_type]*self.planeXXThickness
-            self.ModThickness           = {"CMod" : self.GetModThickness("CMod"),"C3H6Mod" : self.GetModThickness("C3H6Mod"),"TrkMod" : self.GetModThickness("TrkMod")}
+            self.StrawRadius                  = StrawRadius
+            self.DistStrawStraw               = DistStrawStraw
+            self.DistStrawWall                = DistStrawWall
+            self.AngleStrawStraw              = AngleStrawStraw
+            self.StrawBearing                 = StrawBearing
+            self.StrawWireWThickness          = StrawWireWThickness
+            self.StrawWireGThickness          = StrawWireGThickness
+            self.CoatThickness                = CoatThickness
+            self.MylarThickness               = MylarThickness
+            self.StrawGas                     = StrawGas
 
-            self.TargetPosInMod         = lambda mod_type : {"X":-self.ModThickness[mod_type]/2 + self.gap[mod_type] + self.targetThickness[mod_type]/2,"Y": Q("0mm"),"Z":Q("0mm")}
-            self.PlaneXXPosInMod        = lambda mod_type : {"X":-self.ModThickness[mod_type]/2 + self.gap[mod_type] + self.targetThickness[mod_type] + self.planeXXThickness/2,"Y": Q("0mm"),"Z":Q("0mm")}
-            self.PlaneYYPosInMod        = lambda mod_type : {"X":-self.ModThickness[mod_type]/2 + self.gap[mod_type] + self.targetThickness[mod_type] + self.planeXXThickness*1.5,"Y": Q("0mm"),"Z":Q("0mm")}
+            self.planeXXThickness             = 2*(self.StrawRadius + self.StrawBearing)*(math.cos(self.AngleStrawStraw/2)+1) + self.DistStrawStraw*math.cos(self.AngleStrawStraw/2) + 2*self.DistStrawWall
+            self.StrawYDist                   = 2*((self.StrawRadius+self.StrawBearing)*(2*math.sin(self.AngleStrawStraw/2)-1) + self.DistStrawStraw*math.sin(self.AngleStrawStraw/2))
+            self.StrawXDist                   = 2*(self.StrawRadius+self.StrawBearing)*(math.cos(self.AngleStrawStraw/2)-1) + self.DistStrawStraw*math.cos(self.AngleStrawStraw/2)
+
+            #************************************************************************|   STT MODULE   |**********************************************************************************
+
+            self.FrameThickness               = FrameThickness
+            self.targetThickness              = targetThickness
+            self.nofStrawPlanes               = nofStrawPlanes
+            self.AddGapForSlab                = AddGapForSlab
+            self.UpModGap                     = UpModGap
+            self.halfUpModGap                 = self.UpModGap/2.
+            self.gap                          = gap
+            self.GetModThickness              = lambda mod_type : self.gap[mod_type]*2 + self.targetThickness[mod_type] + self.nofStrawPlanes[mod_type]*self.planeXXThickness
+            self.ModThickness                 = {"CMod" : self.GetModThickness("CMod"),"C3H6Mod" : self.GetModThickness("C3H6Mod"),"TrkMod" : self.GetModThickness("TrkMod")}
             
-            self.PlaneXX1PosInTrkMod    = {"X":-self.ModThickness["TrkMod"]/2 + self.gap["TrkMod"] + self.planeXXThickness/2,   "Y":Q("0mm"), "Z":Q("0mm")}
-            self.PlaneYYPosInTrkMod     = {"X":-self.ModThickness["TrkMod"]/2 + self.gap["TrkMod"] + self.planeXXThickness*1.5, "Y":Q("0mm"), "Z":Q("0mm")}
-            self.PlaneXX2PosInTrkMod    = {"X":-self.ModThickness["TrkMod"]/2 + self.gap["TrkMod"] + self.planeXXThickness*2.5, "Y":Q("0mm"), "Z":Q("0mm")}
-
-            self.DistGRAINSTT           = Q("5cm")
-            self.DistGRAINECAL          = Q("5cm")
-            self.DistSTTECAL            = Q("4cm")
-            self.nofUpstreamTrkMod      = 2
-            self.nofDownstreamTrkMod    = 4
-            self.nofC3H6ModAfterCMod    = 9
-            self.AvailableUpstreamSpace = self.kloeTrkRegRadius - self.liqArThickness - self.DistGRAINSTT - self.DistGRAINECAL
-            self.AvalilableDowstreamSpace= self.kloeTrkRegRadius - self.DistSTTECAL
-
-            self.SuperModThickness      = self.ModThickness["CMod"] + self.ModThickness["C3H6Mod"] * self.nofC3H6ModAfterCMod
+            #************************************************************************| STT components placement |**************************************************************************
             
-            self.nofUpstreamSuperMod    = int(abs(self.AvailableUpstreamSpace - self.ModThickness["CMod"]/2 - self.ModThickness["TrkMod"] * self.nofUpstreamTrkMod)/ self.SuperModThickness)
-            self.nofFirstUpstreamC3H6Mod= int((self.AvailableUpstreamSpace - self.nofUpstreamSuperMod*self.SuperModThickness - self.ModThickness["TrkMod"]*self.nofUpstreamTrkMod - self.ModThickness["CMod"]*1.5)/self.ModThickness["C3H6Mod"])
-            self.UpstreamSpaceLeft      = self.AvailableUpstreamSpace - self.nofUpstreamSuperMod*self.SuperModThickness - self.nofFirstUpstreamC3H6Mod*self.ModThickness["C3H6Mod"] - self.ModThickness["CMod"]*1.5  - self.ModThickness["TrkMod"]*self.nofUpstreamTrkMod
+            self.TargetPosInMod               = lambda mod_type : {"X":-self.ModThickness[mod_type]/2 + self.gap[mod_type] + self.targetThickness[mod_type]/2,"Y": Q("0mm"),"Z":Q("0mm")}
             
-            self.nofDownstreamSuperMod  = int((self.AvalilableDowstreamSpace + self.ModThickness["CMod"]/2 - self.ModThickness["TrkMod"] * self.nofDownstreamTrkMod )/self.SuperModThickness)
-            self.nofLastDownstreamC3H6Mod= int((self.AvalilableDowstreamSpace - self.nofDownstreamSuperMod*self.SuperModThickness - self.ModThickness["TrkMod"]*self.nofDownstreamTrkMod - self.ModThickness["CMod"])/self.ModThickness["C3H6Mod"])
-            self.DownstreamSpaceLeft    = self.AvalilableDowstreamSpace - self.nofDownstreamSuperMod*self.SuperModThickness - self.nofLastDownstreamC3H6Mod*self.ModThickness["C3H6Mod"] - self.ModThickness["CMod"] - self.ModThickness["TrkMod"]*self.nofDownstreamTrkMod
+            self.PlaneXXPosInMod              = lambda mod_type : {"X":-self.ModThickness[mod_type]/2 + self.gap[mod_type] + self.targetThickness[mod_type] + self.planeXXThickness/2,"Y": Q("0mm"),"Z":Q("0mm")}
+            self.PlaneYYPosInMod              = lambda mod_type : {"X":-self.ModThickness[mod_type]/2 + self.gap[mod_type] + self.targetThickness[mod_type] + self.planeXXThickness*1.5,"Y": Q("0mm"),"Z":Q("0mm")}
+            self.PlaneXX1PosInTrkMod          = {"X":-self.ModThickness["TrkMod"]/2 + self.gap["TrkMod"] + self.planeXXThickness/2,   "Y":Q("0mm"), "Z":Q("0mm")}
+            self.PlaneYYPosInTrkMod           = {"X":-self.ModThickness["TrkMod"]/2 + self.gap["TrkMod"] + self.planeXXThickness*1.5, "Y":Q("0mm"), "Z":Q("0mm")}
+            self.PlaneXX2PosInTrkMod          = {"X":-self.ModThickness["TrkMod"]/2 + self.gap["TrkMod"] + self.planeXXThickness*2.5, "Y":Q("0mm"), "Z":Q("0mm")}
 
-            self.STT_startX             = - self.AvailableUpstreamSpace + self.UpstreamSpaceLeft
+            #*****************************************************************************************************************************************************************************
 
-            self.StrawYDist      = 2*((self.StrawRadius+self.StrawRing)*(2*math.sin(self.AngleStrawStraw/2)-1) + self.DistStrawStraw*math.sin(self.AngleStrawStraw/2))
-            self.StrawXDist      = 2*(self.StrawRadius+self.StrawRing)*(math.cos(self.AngleStrawStraw/2)-1) + self.DistStrawStraw*math.cos(self.AngleStrawStraw/2)
-            # print(("straw-straw vertical distance: ",self.StrawVerticalDist))
             print("")
-            print("*"*20+" NNVERVOLUME CONFIGURATION "+str(configuration)+" "+"*"*20)
+            print("*"*20+" INNVERVOLUME CONFIGURATION "+str(configuration)+" "+"*"*20)
             print("")
+            print("-"*20+" INNERVOLUME INFO "+"-"*20)
             print("liqArThickness            | "+str(self.liqArThickness))
+            print("distance GRAIN-ECAL       | "+str(self.DistGRAINECAL))
+            print("distance GRAIN-STT        | "+str(self.DistGRAINSTT))
+            print("distance STT-ECAL         | "+str(self.DistSTTECAL))
+            print("")
+            print("-"*20+" STRAW INFO "+"-"*20)
+            print("")
             print("straw radius              | "+str(self.StrawRadius))
-            print("straw ring                | "+str(self.StrawRing))
+            print("straw bearing             | "+str(self.StrawBearing))
             print("straw-straw rel distance  | "+str(self.DistStrawStraw))
-            print("straw-straw X distance    | "+str(self.StrawXDist)+"---> if neg value = intersection if they were alligned")
-            print("straw-straw Y distance    | "+str(self.StrawYDist))
-            print("straw-wall  distance      | "+str(self.DistStrawWall))
-            print("planeXXThickness          | "+str(self.planeXXThickness))
-            print("trkModThickness           | "+str(self.ModThickness["TrkMod"]))
-            print("C3H6ModThickness          | "+str(self.ModThickness["C3H6Mod"]))
-            print("CModThickness             | "+str(self.ModThickness["CMod"]))
+            print("straw-straw X   distance  | "+str(self.StrawXDist)+"---> if neg value = intersection if they were alligned")
+            print("straw-straw Y   distance  | "+str(self.StrawYDist))
+            print("straw-wall      distance  | "+str(self.DistStrawWall))
+            print("")
+            print("-"*20+" STT MOD  INFO "+"-"*20)
+            print("")
+            print("planeXX    Thickness      | "+str(self.planeXXThickness))
+            print("Ctarget    Thickness      | "+str(self.targetThickness["CMod"]))
+            print("C3H6target Thickness      | "+str(self.targetThickness["C3H6Mod"]))
+            print("trkMod     Thickness      | "+str(self.ModThickness["TrkMod"]))
+            print("C3H6Mod    Thickness      | "+str(self.ModThickness["C3H6Mod"]))
+            print("CMod       Thickness      | "+str(self.ModThickness["CMod"]))
+            print("")
 
     def init(self):
+
+        #************ CALCULATE STT SEQUENCE AND NUMBER OF MODULES            
+        self.SuperModThickness            = self.ModThickness["CMod"] + self.ModThickness["C3H6Mod"] * self.nofC3H6ModAfterCMod
+        
+        self.nofUpstreamSuperMod          = int(abs(self.AvailableUpstreamSpace - self.ModThickness["CMod"]/2 - self.ModThickness["TrkMod"] * self.nofUpstreamTrkMod)/ self.SuperModThickness)
+        self.nofFirstUpstreamC3H6Mod      = int((self.AvailableUpstreamSpace - self.nofUpstreamSuperMod*self.SuperModThickness - self.ModThickness["TrkMod"]*self.nofUpstreamTrkMod - self.ModThickness["CMod"]*1.5)/self.ModThickness["C3H6Mod"])
+        self.UpstreamSpaceLeft            = self.AvailableUpstreamSpace - self.nofUpstreamSuperMod*self.SuperModThickness - self.nofFirstUpstreamC3H6Mod*self.ModThickness["C3H6Mod"] - self.ModThickness["CMod"]*1.5  - self.ModThickness["TrkMod"]*self.nofUpstreamTrkMod
+        
+        self.nofDownstreamSuperMod        = int((self.AvalilableDowstreamSpace + self.ModThickness["CMod"]/2 - self.ModThickness["TrkMod"] * self.nofDownstreamTrkMod )/self.SuperModThickness)
+        self.nofLastDownstreamC3H6Mod     = int((self.AvalilableDowstreamSpace - self.nofDownstreamSuperMod*self.SuperModThickness - self.ModThickness["TrkMod"]*self.nofDownstreamTrkMod - self.ModThickness["CMod"])/self.ModThickness["C3H6Mod"])
+        self.DownstreamSpaceLeft          = self.AvalilableDowstreamSpace - self.nofDownstreamSuperMod*self.SuperModThickness - self.nofLastDownstreamC3H6Mod*self.ModThickness["C3H6Mod"] - self.ModThickness["CMod"] - self.ModThickness["TrkMod"]*self.nofDownstreamTrkMod
+        self.STT_startX                   = - self.AvailableUpstreamSpace + self.UpstreamSpaceLeft
 
         module_sequence,modules_X_center = [],[]
 
@@ -157,7 +179,7 @@ class TestOneSTTBuilder(gegede.builder.Builder):
 
         for mod_id in range(len(self.module_sequence)):
 
-            print(">"*10+"calling STTMODULE constructor")
+            # print(">"*10+"calling STTMODULE constructor")
             mod_lv       = self.construct_one_mod(geom, main_lv, mod_id) 
             mod_position = geom.structure.Position("mod_"+str(mod_id)+"_pos", self.modules_X_center[mod_id], Q("0m"), Q("0m"))
             mod_place    = geom.structure.Placement("mod_"+str(mod_id)+"_place", volume = mod_lv.name, pos = mod_position.name)
@@ -211,7 +233,7 @@ class TestOneSTTBuilder(gegede.builder.Builder):
 
         planeXX_name            = base_name+"_planeXX" 
         planeYY_name            = base_name+"_planeYY" 
-        print(">"*10+"calling STRAWPLANE constructor")
+        # print(">"*10+"calling STRAWPLANE constructor")
         planeXX                 = self.constructStrawPlane(geom, planeXX_name, dy = module_half_heigth - self.FrameThickness,     dz = self.kloeTrkRegHalfDx - self.FrameThickness, gas = self.StrawGas[module_type])
         planeYY                 = self.constructStrawPlane(geom, planeYY_name, dy = self.kloeTrkRegHalfDx - self.FrameThickness,  dz = module_half_heigth - self.FrameThickness,    gas = self.StrawGas[module_type])
         
@@ -273,20 +295,19 @@ class TestOneSTTBuilder(gegede.builder.Builder):
         plane_shape = geom.shapes.Box(base_name, dx=self.planeXXThickness/2, dy=dy, dz=dz)
         plane_lv    = geom.structure.Volume(base_name,material="Air35C", shape=plane_shape)
 
-        # straw_lv    = self.constructStraw(geom, base_name, dz, gas)
-        print(">"*10+"calling STRAWTUBE constructor")
-        straw_lv      = self.get_builder("STRAWTUBE").get_volume()#.construct(base_name,dz,gas)
-        
-        Nstraw      = int(dy/(self.StrawRadius + self.StrawRing + self.StrawYDist/2))*2 - 1
+        # print(">"*10+"calling STRAWTUBE constructor")
+        straw_lv    = self.constructStraw(geom, base_name, dz, gas)
+        # straw_lv      = self.get_builder("STRAWTUBE").get_volume()
+        Nstraw      = int(dy/(self.StrawRadius + self.StrawBearing + self.StrawYDist/2))*2 - 1
 
-        left_spaceY = dy - Nstraw * (self.StrawRadius + self.StrawRing + self.StrawYDist/2)
+        left_spaceY = dy.magnitude*1E3%(self.StrawRadius + self.StrawBearing + self.StrawYDist/2).magnitude
 
-        running_y   = dy - left_spaceY
+        running_y   = dy - Q(str(left_spaceY)+"mm")
         
         for i in range(Nstraw):
 
-            running_y   -= (2*self.StrawRadius + 2*self.StrawRing + self.DistStrawStraw)*math.sin(self.AngleStrawStraw/2) 
-            running_x   = (-1)**(i+1) * (2*(self.StrawRadius+self.StrawRing)+self.StrawXDist)/2
+            running_y   -= (2*self.StrawRadius + 2*self.StrawBearing + self.DistStrawStraw)*math.sin(self.AngleStrawStraw/2) 
+            running_x   = (-1)**(i+1) * (2*(self.StrawRadius+self.StrawBearing)+self.StrawXDist)/2
             straw_name  = base_name+"straw"+str(i)
             straw_pos   = geom.structure.Position(straw_name+"_pos", running_x, running_y, Q('0m'))
             straw_place = geom.structure.Placement(straw_name+"_place", volume = straw_lv.name, pos = straw_pos.name)
@@ -297,12 +318,12 @@ class TestOneSTTBuilder(gegede.builder.Builder):
     def constructStraw(self, geom, base_name, straw_half_length, gas):
         # straw 
         straw_name          = base_name+"_straw"
-        straw_shape         = geom.shapes.Tubs(straw_name+"_shape", rmin=Q("0m"), rmax=self.StrawRadius + self.StrawRing, dz=straw_half_length)
+        straw_shape         = geom.shapes.Tubs(straw_name+"_shape", rmin=Q("0m"), rmax=self.StrawRadius + self.StrawBearing, dz=straw_half_length)
         straw_lv            = geom.structure.Volume(straw_name, material="Air35C", shape = straw_shape)
 
         # straw ring
         ring_name           = straw_name+"_ring"
-        ring_shape          = geom.shapes.Tubs(ring_name+"_shape", rmin = self.StrawRadius, rmax = self.StrawRadius + self.StrawRing, dz=straw_half_length)
+        ring_shape          = geom.shapes.Tubs(ring_name+"_shape", rmin = self.StrawRadius, rmax = self.StrawRadius + self.StrawBearing, dz=straw_half_length)
         ring_lv             = geom.structure.Volume(ring_name, material="Air35C", shape = ring_shape)
         ring_pla            = geom.structure.Placement(ring_name+"_place", volume = ring_lv)
 
