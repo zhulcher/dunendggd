@@ -210,7 +210,7 @@ class STTBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(mod_place.name)
 
-            if mod_id==4: break
+            # if mod_id==4: break
         
         self.stop_time = time.time()
         print("")
