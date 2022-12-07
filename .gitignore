@@ -6,6 +6,8 @@ dunendggd.egg-info
 *~
 *#
 *.bak
+*.xml
+*plotting.py
 ArgonCube/*.sh
 ArgonCube/geom-test.root
 !ArgonCube/*OptSim*

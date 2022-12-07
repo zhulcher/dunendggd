@@ -234,12 +234,8 @@
     <position unit="cm" name="Flange_pos" x="0" y="86.8426" z="0"/>
     <position unit="cm" name="HVFeedThrough_pos" x="0" y="-16.22629999999999" z="0"/>
     <rotation unit="degree" name="HVFeedThrough_rot" x="90.0" y="0.0" z="0.0"/>
-    <position unit="cm" name="Module_pos_0.0" x="-33.5" y="0" z="-33.5"/>
-    <position unit="cm" name="Module_pos_0.1" x="-33.5" y="0" z="33.5"/>
-    <position unit="cm" name="Module_pos_1.0" x="33.5" y="0" z="-33.5"/>
-    <position unit="cm" name="Module_pos_1.1" x="33.5" y="0" z="33.5"/>
-    <position unit="cm" name="volDetector_pos" x="0.0" y="0.0" z="0.0"/>
-    <rotation unit="degree" name="volDetector_rot" x="0" y="0" z="0"/>
+    <position unit="cm" name="volModule_pos" x="0.0" y="0.0" z="0.0"/>
+    <rotation unit="degree" name="volModule_rot" x="0" y="0" z="0"/>
     <rotation unit="degree" name="noRotate" x="0" y="0" z="0"/>
     <rotation unit="degree" name="r90aboutX" x="90" y="0" z="0"/>
     <rotation unit="degree" name="rminus90aboutX" x="-90" y="0" z="0"/>
@@ -953,7 +949,6 @@
     <tube name="Insulation_shape" lunit="cm" aunit="radian" rmin="0.06999999999999999" rmax="0.5700000000000001" z="169.7888" startphi="0.0" deltaphi="6.283185307179586"/>
     <tube name="Core_shape" lunit="cm" aunit="radian" rmin="0.0" rmax="0.06999999999999999" z="169.7888" startphi="0.0" deltaphi="6.283185307179586"/>
     <box name="Module" lunit="cm" x="67.0" y="202.2414" z="67.0"/>
-    <box name="Detector" lunit="cm" x="134.0" y="202.2414" z="134.0"/>
     <box name="DetEnclosure" lunit="cm" x="2000.0" y="2000.0" z="2000.0"/>
     <box name="World" lunit="cm" x="60000.0" y="60000.0" z="60000.0"/>
   </solids>
@@ -2230,37 +2225,13 @@
         <rotationref ref="identity"/>
       </physvol>
     </volume>
-    <volume name="volDetector">
-      <materialref ref="Air"/>
-      <solidref ref="Detector"/>
-      <physvol>
-        <volumeref ref="volModule"/>
-        <positionref ref="Module_pos_0.0"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol copynumber="2">
-        <volumeref ref="volModule"/>
-        <positionref ref="Module_pos_0.1"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol copynumber="1">
-        <volumeref ref="volModule"/>
-        <positionref ref="Module_pos_1.0"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol copynumber="3">
-        <volumeref ref="volModule"/>
-        <positionref ref="Module_pos_1.1"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
     <volume name="volDetEnclosure">
       <materialref ref="Air"/>
       <solidref ref="DetEnclosure"/>
       <physvol>
-        <volumeref ref="volDetector"/>
-        <positionref ref="volDetector_pos"/>
-        <rotationref ref="volDetector_rot"/>
+        <volumeref ref="volModule"/>
+        <positionref ref="volModule_pos"/>
+        <rotationref ref="volModule_rot"/>
       </physvol>
     </volume>
     <volume name="volWorld">

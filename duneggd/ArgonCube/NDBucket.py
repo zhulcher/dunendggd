@@ -13,7 +13,7 @@ from gegede import Quantity as Q
 class NDBucketBuilder(gegede.builder.Builder):
     """ Class to build NDBucket geometry."""
 
-    def configure(self,Bucket_dimension,Backplate_dx,Backplate_OffsetX,Backplate_ExtraY,**kwargs):
+    def configure(self,Bucket_dimension,Backplate_dx,Backplate_OffsetX,Backplate_ExtraY,AuxParams=None,**kwargs):
         # Read dimensions form config file
         self.Bucket_dx = Bucket_dimension['dx']
         self.Bucket_dy = Bucket_dimension['dy']
@@ -27,6 +27,7 @@ class NDBucketBuilder(gegede.builder.Builder):
         self.G10_Material           = 'G10'
         self.LArPhase_Material      = 'LAr'
         self.Material               = 'LAr'
+        self.AuxParams          = AuxParams
 
         # Subbuilders
         self.InnerDetector_builder  = self.get_builder('InnerDetector')
@@ -42,6 +43,8 @@ class NDBucketBuilder(gegede.builder.Builder):
         }
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, main_lv)
         print('NDBucketBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)
@@ -55,6 +58,9 @@ class NDBucketBuilder(gegede.builder.Builder):
         ArgonColumn_lv = geom.structure.Volume('volArgonColumn',
                                         material=self.LArPhase_Material,
                                         shape=ArgonColumn_shape)
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, ArgonColumn_lv)
 
         pos = [Q('0cm'),Q('0cm'),Q('0cm')]
 
@@ -90,12 +96,19 @@ class NDBucketBuilder(gegede.builder.Builder):
         Backplate_lv = geom.structure.Volume('Backplate_lv',
                                         material=self.G10_Material,
                                         shape=Backplate_shape)
+                                    
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, Backplate_lv)
 
         Backplate_y = -self.Bucket_dy + (self.InnerDetector_builder.halfDimension['dy'] + self.Backplate_ExtraY)
+        # G10 gap fillers connecting backplate to fieldcage
+        FieldcageGap = Q('8.89mm')/2#(self.Bucket_dx - self.InnerDetector_builder.halfDimension['dx']) / 2 - self.Backplate_dx * 3/2
+        #print("FieldcageGap",FieldcageGap*2,"but should be ",8.89)
+        print(self.Bucket_dx*2,self.InnerDetector_builder.halfDimension['dx']*2,self.Backplate_dx * 3)
 
         for i, (side, sign) in enumerate((('L', -1), ('R', 1))):
             pos = [
-                sign*(self.Bucket_dx-2*self.Backplate_OffsetX+self.Backplate_dx),
+                sign*(self.Bucket_dx-Q('5mm')/2-self.Backplate_dx-2*FieldcageGap),#self.InnerDetector_builder.halfDimension['dx'] + Q('8mm')),#FieldcageGap),
                 Backplate_y,
                 Q('0cm')
             ]
@@ -120,6 +133,9 @@ class NDBucketBuilder(gegede.builder.Builder):
                                         material=self.G10_Material,
                                         shape=FieldcageTop_shape)
 
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, FieldcageTop_lv)
+
         FieldcageTop_y = -self.Bucket_dy + (2*self.InnerDetector_builder.halfDimension['dy'] + self.Backplate_ExtraY)
 
         for i, (side, sign) in enumerate((('US', -1),('DS', 1))):
@@ -139,8 +155,6 @@ class NDBucketBuilder(gegede.builder.Builder):
 
             ArgonColumn_lv.placements.append(FieldcageTop_pla.name)
 
-        # G10 gap fillers connecting backplate to fieldcage
-        FieldcageGap = (self.Bucket_dx - self.InnerDetector_builder.halfDimension['dx']) / 2 - self.Backplate_dx * 3/2
 
         FieldcageGap_shape = geom.shapes.Box('FieldcageGap_shape',
                                        dx=FieldcageGap,
@@ -151,9 +165,12 @@ class NDBucketBuilder(gegede.builder.Builder):
                                         material=self.G10_Material,
                                         shape=FieldcageGap_shape)
 
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, FieldcageGap_lv)
 
 
-        px = self.InnerDetector_builder.halfDimension['dx'] + FieldcageGap
+
+        px = self.Bucket_dx-Q('5mm')/2-FieldcageGap#2*self.Backplate_OffsetX+self.Backplate_dx
         py = Backplate_y
         pz = self.InnerDetector_builder.halfDimension['dz'] - self.HalfDetector_builder.Fieldcage_dd
 
