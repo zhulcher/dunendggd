@@ -8,6 +8,8 @@ Geometry releases will be tagged as `Descriptive_tag_v_X.Y.Z`.
 
 ## [Unreleased]
 
+## [TDR_Production_geometry_v_1.0.2]
+
 ## Fixed
 
 - Fixed Overlaps in TMS geometry.
