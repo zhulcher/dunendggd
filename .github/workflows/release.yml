@@ -24,13 +24,13 @@ jobs:
       run: |
         for F in *.gdml
         do
-          mv $F ${F%.gdml}_{{GITHUB_REF_NAME}}.gdml
+          mv $F ${F%.gdml}_${GITHUB_REF_NAME}.gdml
         done
     - name: Compress geometry files
-      run: tar -czf default_geometries_{{GITHUB_REF_NAME}}.tar.gz *.gdml
+      run: tar -czf default_geometries_${GITHUB_REF_NAME}.tar.gz *.gdml
     - name: Create release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          default_geometries_{{GITHUB_REF_NAME}}.tar.gz
+          default_geometries_*.tar.gz
         body: See `CHANGELOG.md` for a detailed release history.
