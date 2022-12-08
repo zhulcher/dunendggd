@@ -22,7 +22,9 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Default Geometry
-        path: nd_hall_with_lar_tms_sand.gdml
+        path: |
+          nd_hall_with_lar_tms_sand.gdml
+          anti_fiducial_nd_hall_with_lar_tms_sand.gdml
   check_overlaps:
     name: Check geometry for overlaps
     runs-on: ubuntu-latest
