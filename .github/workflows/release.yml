@@ -5,7 +5,7 @@ name: Create new release
 on:
   push:
     tags:
-    - "*v*.*.*"
+    - "*_v_*.*.*"
     
 jobs:
   release:
@@ -20,10 +20,13 @@ jobs:
       run: pip install .
     - name: Build default gdml files
       run: ./build_hall.sh
+    - name: Rename gdml files to include tag
+      run: rename 's/\.gdml$/_{{GITHUB_REF_NAME}}.gdml/' *.gdml
+    - name: Compress geometry files
+      run: tar -czf default_geometries_{{GITHUB_REF_NAME}}.tar.gz *.gdml
     - name: Create release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          nd_hall_with_lar_tms_sand.gdml
-          anti_fiducial_nd_hall_with_lar_tms_sand.gdml
+          default_geometries_{{GITHUB_REF_NAME}}.tar.gz
         body: See `CHANGELOG.md` for a detailed release history.
