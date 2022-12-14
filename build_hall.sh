@@ -384,7 +384,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/SAND_MAGNET.cfg \
            duneggd/Config/SAND_INNERVOLOPT2.cfg \
            duneggd/Config/SAND_ECAL.cfg \
-           duneggd/Config/SAND_STT/Radiator_TouchingStraws_StrawRadius2p5.cfg \
+           duneggd/Config/SAND_STT/NoRadiator_NoTouchingStraws_StrawRadius3p5.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
            duneggd/Config/ND_CraneRailStruct1.cfg \
            duneggd/Config/ND_CraneRailStruct2.cfg \
