@@ -21,7 +21,7 @@ class MagnetBuilder(gegede.builder.Builder):
         self.magOutDim[2] += 2*actThickness # and in z
         self.MagMat = actMaterial 
         self.actThickness = actThickness
-        self.location     = list(Location)
+	self.location     = list(Location)
 
         self.magInDimB  = actDimensionB # inner dimension of the yoke
         self.magInDimB = list(actDimensionB) # why repeated but with list(...)?
@@ -29,10 +29,10 @@ class MagnetBuilder(gegede.builder.Builder):
         self.magOutDimB[0] += 2*actThicknessB # add thickness to outer dimensions in x and y
         self.magOutDimB[1] += 2*actThicknessB
         self.MagMatB = actMaterialB
-        self.nMag    = nMag
-        self.nMagB   = nMagB
-        self.magGap  = magGap
-        self.magBGap = magBGap
+	self.nMag    = nMag
+	self.nMagB   = nMagB
+	self.magGap  = magGap
+	self.magBGap = magBGap
      
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -67,7 +67,7 @@ class MagnetBuilder(gegede.builder.Builder):
 
         ##### Make a mother volume to hold the magnet segments ################
         self.MagnetOutt = [self.magOutDimB[0], self.magOutDimB[1], (self.magOutDimB[2]+self.magBGap)*self.nMagB]
-        self.MagnetInn = [(self.magInDim[0]+self.magGap)*self.nMag, self.magInDim[1], self.magInDim[2]]
+	self.MagnetInn = [(self.magInDim[0]+self.magGap)*self.nMag, self.magInDim[1], self.magInDim[2]]
 
         print(("MagnetBuilder  full yoke outer dimensions = ",self.MagnetOutt))
         print(("MagnetBuilder  full coil inner dimesions = ",self.MagnetInn))
@@ -113,6 +113,6 @@ class MagnetBuilder(gegede.builder.Builder):
                 Magnet_lv.placements.append( pMagB.name )
 
 #	Magnet_lv.params.append(("SensDet",self.name))
-        return
+	return
 
 

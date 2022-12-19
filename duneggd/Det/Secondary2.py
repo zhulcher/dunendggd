@@ -21,7 +21,7 @@ class Secondary2Builder(gegede.builder.Builder):
 
         # Get all of the detector subsystems to position and place
         self.ecalDownBldr = self.get_builder('ECALDownstream')        
-        self.ecalUpBldr = self.get_builder('ECALUpstream')
+        #self.ecalUpBldr = self.get_builder('ECALUpstream')
         self.ecalBarBldr  = self.get_builder('ECALBarrel')
         self.MagnetBldr   = self.get_builder('Magnet')
         self.EcalBField = EcalBField
@@ -82,7 +82,7 @@ class Secondary2Builder(gegede.builder.Builder):
                                                   rot=self.ecalDownRot)
         det_lv.placements.append(pecalDown_in_MagInner.name)
 
-        ecalUp_lv = self.ecalUpBldr.get_volume('volECALUpstream')
+        #ecalUp_lv = self.ecalUpBldr.get_volume('volECALUpstream')
         if isinstance(self.EcalBField,str):
             ecalUp_lv.params.append(("BField",self.EcalBField))
 

@@ -43,12 +43,12 @@ export PATH=~/.local/bin/:${PATH}
 # Example
 To run an example containing basic detectors, you could process like:
 ```bash
-gegede-cli duneggd/Config/PRIMggd_example.cfg duneggd/Config/DETENCLOSURE-prim-only.cfg duneggd/Config/ArgonCube/WORLD_ArgonCube_ggd.cfg -w World -o example.gdml
+gegede-cli duneggd/Config/PRIMggd_example.cfg duneggd/Config/DETENCLOSURE-prim-only.cfg duneggd/Config/WORLDggd.cfg -w World -o example.gdml
 ```
 
 To run a full example containing surrounded magnet
 ```bash
-gegede-cli duneggd/Config/PRIMggd_example.cfg duneggd/Config/SECggd_example.cfg duneggd/Config/DETENCLOSURE.cfg duneggd/Config/ArgonCube/WORLD_ArgonCube_ggd.cfg -w World -o full_example.gdml
+gegede-cli duneggd/Config/PRIMggd_example.cfg duneggd/Config/SECggd_example.cfg duneggd/Config/DETENCLOSURE.cfg duneggd/Config/WORLDggd.cfg -w World -o full_example.gdml
 ```
 
 # Quick Visualization
