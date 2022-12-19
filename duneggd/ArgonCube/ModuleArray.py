@@ -12,13 +12,14 @@ from gegede import Quantity as Q
 class ModuleArrayBuilder(gegede.builder.Builder):
     """ Class to build Module Array geometry."""
 
-    def configure(self, N_ModuleX, N_ModuleZ, TopLArHeight, **kwargs):
+    def configure(self, N_ModuleX, N_ModuleZ, TopLArHeight,AuxParams=None, **kwargs):
         self.Material   = 'LAr'
 
         # Read dimensions form config file
         self.N_ModuleX  = N_ModuleX
         self.N_ModuleZ  = N_ModuleZ
         self.TopLArHeight = TopLArHeight
+        self.AuxParams    = AuxParams
 
         # Subbuilders
         self.NDBucket_builder = self.get_builder('NDBucket')
@@ -34,6 +35,10 @@ class ModuleArrayBuilder(gegede.builder.Builder):
                                 'dz':   arraydz}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, main_lv)
+            
         print('ModuleArrayBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)

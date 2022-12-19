@@ -1,4 +1,4 @@
-void geoDisplay(TString filename, Int_t VisLevel=5)
+void geoDisplay(TString filename, Int_t VisLevel=15)
 {
 	TGeoManager *geo = TGeoManager::Import(filename);
 	geo->DefaultColors();
@@ -8,9 +8,10 @@ void geoDisplay(TString filename, Int_t VisLevel=5)
  	geo->PrintOverlaps();
 	geo->SetVisOption(1);
 	geo->SetVisLevel(VisLevel);
-	geo->GetTopVolume()->Print();
-	geo->GetTopVolume()->Draw("ogl");
-	
+	// geo->GetTopVolume()->Print();
+
+	//geo->GetTopVolume()->Draw("ogl");
+	geo->GetVolume("volArgonCubeDetector75")->Draw("ogl");
 	TGLViewer * v = (TGLViewer *)gPad->GetViewer3D();
 	v->SetStyle(TGLRnrCtx::kOutline);
 	v->SetSmoothPoints(kTRUE);

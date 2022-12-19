@@ -14,7 +14,7 @@ class ArCLightBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,WLS_dimension,SiPM_dimension,SiPM_Mask,SiPM_PCB,N_SiPM,N_Mask,**kwargs):
+    def configure(self,WLS_dimension,SiPM_dimension,SiPM_Mask,SiPM_PCB,N_SiPM,N_Mask,AuxParams=None,**kwargs):
 
         # Read dimensions form config file
         self.WLS_dx             = WLS_dimension['dx']
@@ -53,6 +53,7 @@ class ArCLightBuilder(gegede.builder.Builder):
         self.SiPM_PCB_Material  = 'FR4'
 
         self.Material           = 'LAr'
+        self.AuxParams          = AuxParams
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -71,6 +72,10 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             +self.TPB_dd}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, main_lv)
+
         print('ArCLightBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)
@@ -84,6 +89,9 @@ class ArCLightBuilder(gegede.builder.Builder):
         WLS_lv = geom.structure.Volume('volWLS',
                                             material=self.WLS_Material,
                                             shape=WLS_shape)
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, WLS_lv)
 
         # Place WLS panel into main LV
         pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),-self.TPB_dd]
@@ -106,6 +114,9 @@ class ArCLightBuilder(gegede.builder.Builder):
         DCM_lv = geom.structure.Volume('volDCM',
                                             material=self.DCM_Material,
                                             shape=DCM_shape)
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, DCM_lv)
 
         # Place inner DCM LV next to WLS Plane
         pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),self.WLS_dz+self.DCM_dd-self.TPB_dd]
@@ -142,6 +153,9 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             #material=self.TPB_Material,
                                             shape=TPB_shape)
 
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, TPB_lv)
+
         # Place TPB LV next to DCM foil
         pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),self.WLS_dz+2*self.DCM_dd]
 
@@ -164,6 +178,9 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             material=self.SiPM_Mask_Material,
                                             shape=SiPM_Mask_shape)
 
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, SiPM_Mask_lv)
+
         # Construct SiPM Sens LV
         SiPM_Sens_shape = geom.shapes.Box('SiPM_Sens_shape',
                                        dx = self.Sens_dd,
@@ -173,6 +190,9 @@ class ArCLightBuilder(gegede.builder.Builder):
         SiPM_Sens_lv = geom.structure.Volume('volSiPM_Sens',
                                             material=self.SiPM_Material,
                                             shape=SiPM_Sens_shape)
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, SiPM_Sens_lv)
 
         # Place Mask LV next to WLS plane
         for n in range(self.N_Mask):
@@ -212,6 +232,9 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             material=self.SiPM_Material,
                                             shape=SiPM_shape)
 
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, SiPM_lv)
+
         # Place SiPMs next to WLS plane
         for n in range(int(self.N_SiPM/self.N_Mask)):
             posipm = [self.SiPM_Mask_dx-self.SiPM_dx,-(self.N_SiPM/self.N_Mask-1)*self.SiPM_pitch+(2*n)*self.SiPM_pitch,Q('0cm')]
@@ -234,6 +257,9 @@ class ArCLightBuilder(gegede.builder.Builder):
         SiPM_PCB_lv = geom.structure.Volume('volSiPM_PCB',
                                             material=self.SiPM_PCB_Material,
                                             shape=SiPM_PCB_shape)
+                                        
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, SiPM_PCB_lv)
 
         for n in range(self.N_Mask):
             # Place SiPM PCBs next to SiPM Masks

@@ -14,10 +14,11 @@ class InnerDetectorBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,**kwargs):
+    def configure(self,AuxParams=None,**kwargs):
 
         # Material definitons
         self.Material           = 'G10'
+        self.AuxParams          = AuxParams
 
         # Subbuilders
         self.HalfDetector_builder = self.get_builder('HalfDetector')
@@ -32,6 +33,8 @@ class InnerDetectorBuilder(gegede.builder.Builder):
                                 'dz':   self.HalfDetector_builder.halfDimension['dz']}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, main_lv)
         print('InnerDetectorBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)

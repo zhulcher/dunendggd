@@ -14,13 +14,14 @@ class TPCBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Drift_Length,**kwargs):
+    def configure(self,Drift_Length,AuxParams=None,**kwargs):
 
         # Read dimensions form config file
         self.Drift_Length       = Drift_Length
 
         # Material definitons
         self.Material           = 'LAr'
+        self.AuxParams          = AuxParams
 
         # Subbuilders
         self.OpticalDet_builder = self.get_builder('OpticalDet')
@@ -36,8 +37,10 @@ class TPCBuilder(gegede.builder.Builder):
 
                                 'dy':   self.TPCPlane_builder.halfDimension['dy'],
                                 'dz':   self.TPCPlane_builder.halfDimension['dz']}
-
+        print("tpcx",self.Drift_Length+self.TPCPlane_builder.halfDimension['dx'],self.Drift_Length)
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, main_lv)
         print('TPCBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)
@@ -61,10 +64,11 @@ class TPCBuilder(gegede.builder.Builder):
                                         dx =    self.Drift_Length,
                                         dy =    self.TPCPlane_builder.halfDimension['dy'],
                                         dz =    self.TPCPlane_builder.halfDimension['dz'])
-
+        print("TPCACTIVESHAPE CHANGE",self.TPCPlane_builder.halfDimension['dz']*2-Q('955.72mm'))
         TPCActive_lv = geom.structure.Volume('volTPCActive',
                                         material=self.Material,
                                         shape=TPCActive_shape)
+
 
         TPCActive_lv.params.append(("SensDet","TPCActive_shape"))
         TPCActive_lv.params.append(("EField","(500.0 V/cm, 0.0 V/cm, 0.0 V/cm)"))

@@ -14,7 +14,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Gap_LightTile,Gap_LightTile_PixelPlane,N_TilesY,**kwargs):
+    def configure(self,Gap_LightTile,Gap_LightTile_PixelPlane,N_TilesY,AuxParams=None,**kwargs):
 
         # Read dimensions form config file
         self.Gap_LightTile              = Gap_LightTile
@@ -23,6 +23,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
         # Material definitons
         self.Material                   = 'LAr'
+        self.AuxParams          = AuxParams
 
         # Subbuilders
         self.ArCLight_builder           = self.get_builder('ArCLight')
@@ -40,8 +41,12 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
                                 'dy':   self.TPCPlane_builder.halfDimension['dy'],
                                 'dz':   self.ArCLight_builder.halfDimension['dz']}
-
+        print("opt det",self.TPCPlane_builder.halfDimension['dx']
+                                        +self.ArCLight_builder.halfDimension['dx']
+                                        +self.Gap_LightTile_PixelPlane,self.TPCPlane_builder.halfDimension['dx'],self.ArCLight_builder.halfDimension['dx'],self.Gap_LightTile_PixelPlane)
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, main_lv)
         print('OpticalDetBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)
@@ -70,6 +75,9 @@ class OpticalDetBuilder(gegede.builder.Builder):
         PCBBar_lv = geom.structure.Volume('volPCBBar',
                                         material=self.PixelPlane_builder.PCB_Material,
                                         shape=PCBBar_shape)
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, PCBBar_lv)
 
         # Place PCB Bar
         for i in range(self.TPCPlane_builder.N_UnitsY):

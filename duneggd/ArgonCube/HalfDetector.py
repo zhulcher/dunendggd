@@ -14,7 +14,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Fieldcage_dimension,Bracket_dimension,Cathode_dx,**kwargs):
+    def configure(self,Fieldcage_dimension,Bracket_dimension,Cathode_dx,AuxParams=None,**kwargs):
 
         # Read dimensions form config file
         self.Fieldcage_dx   = Fieldcage_dimension['dx']
@@ -32,6 +32,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         self.Bracket_Material       = 'G10'
 
         self.Material               = 'G10'
+        self.AuxParams          = AuxParams
 
         # Subbuilders
         self.TPC_builder            = self.get_builder('TPC')
@@ -47,6 +48,8 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                 'dz':   self.Fieldcage_dz}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, main_lv)
         print('HalfDetectorBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)
@@ -60,6 +63,9 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         Fieldcage_lv = geom.structure.Volume('volFieldcage',
                                         material=self.Material,
                                         shape=Fieldcage_shape)
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, Fieldcage_lv)
 
         # Place Fieldcage
         pos = [Q('0cm'),Q('0cm'),Q('0cm')]
@@ -82,6 +88,9 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         LAr_lv = geom.structure.Volume('volLAr',
                                         material=self.LAr_Material,
                                         shape=LAr_shape)
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, LAr_lv)
 
         # Place LAr Volume inside Fieldcage volume
         pos = [-self.Cathode_dx/2,Q('0cm'),Q('0cm')]
@@ -126,6 +135,10 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         Bracket_lv = geom.structure.Volume('volBracket',
                                         material=self.Bracket_Material,
                                         shape=Bracket_shape)
+
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, Bracket_lv)
 
         for side, sign in (('L', -1), ('R', 1)):
             # OpticalDet

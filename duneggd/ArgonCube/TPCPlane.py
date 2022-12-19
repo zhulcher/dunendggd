@@ -14,7 +14,7 @@ class TPCPlaneBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Gap_PixelTile,N_UnitsY,**kwargs):
+    def configure(self,Gap_PixelTile,N_UnitsY,AuxParams=None,**kwargs):
 
         # Read dimensions form config file
         self.Gap_PixelTile  = Gap_PixelTile
@@ -22,6 +22,7 @@ class TPCPlaneBuilder(gegede.builder.Builder):
 
         # Material definitons
         self.Material       = 'LAr'
+        self.AuxParams          = AuxParams
 
         # Subbuilders
         self.PixelPlane_builder  = self.get_builder('PixelPlane')
@@ -37,6 +38,8 @@ class TPCPlaneBuilder(gegede.builder.Builder):
                                 'dz':   2*self.PixelPlane_builder.halfDimension['dz']+self.Gap_PixelTile}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, main_lv)
         print('TPCPlaneBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)

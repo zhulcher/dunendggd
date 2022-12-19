@@ -14,7 +14,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,PCB_dimension,Pixel_dimension,Asic_dimension,N_Pixel,N_Asic,**kwargs):
+    def configure(self,PCB_dimension,Pixel_dimension,Asic_dimension,N_Pixel,N_Asic,AuxParams=None,**kwargs):
 
         # Read dimensions form config file
         self.PCB_dx             = PCB_dimension['dx']
@@ -38,6 +38,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         self.Asic_Material      = 'Silicon'
 
         self.Material           = 'LAr'
+        self.AuxParams          = AuxParams
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -53,6 +54,10 @@ class PixelPlaneBuilder(gegede.builder.Builder):
                                 'dz':   self.PCB_dz}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, main_lv)
+            
         print('PixelPlaneBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)
@@ -66,6 +71,9 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         PCB_lv = geom.structure.Volume('volTPCPCB',
                                             material=self.PCB_Material,
                                             shape=PCB_shape)
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, PCB_lv)
 
         # Place PCB panel into main LV
         pos = [-self.Pixel_dx+self.Asic_dx,Q('0m'),Q('0m')]
@@ -88,6 +96,8 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         Pixel_lv = geom.structure.Volume('volTPCPixel',
                                             material=self.Pixel_Material,
                                             shape=Pixel_shape)
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, Pixel_lv)
 
         for n in range(self.N_Pixel):
             for m in range(self.N_Pixel):
@@ -113,6 +123,9 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         Asic_lv = geom.structure.Volume('volTPCAsic',
                                             material=self.Asic_Material,
                                             shape=Asic_shape)
+
+        if self.AuxParams != None:
+            ltools.addAuxParams(self, Asic_lv)
 
         for n in range(self.N_Asic):
             for m in range(self.N_Asic):
