@@ -6,7 +6,7 @@ import time
 
 class STTBuilder(gegede.builder.Builder):
 
-    def configure(self, 
+    def configure(self, STTconfiguration=None,
                         # SANDINNERVOLUME
                         halfDimension=None,     Material=None,            nBarrelModules=None,      configuration=None,     liqArThickness=None,    DistGRAINSTT=None,        DistGRAINECAL=None,       DistSTTECAL=None,
                         # STT   tracker
@@ -32,12 +32,12 @@ class STTBuilder(gegede.builder.Builder):
             self.rotAngle                     = 0.5 * Q('360deg') / self.nBarrelModules
             self.liqArThickness               = liqArThickness
             self.configuration                = configuration
+            self.STTcofiguration              = STTconfiguration
             self.DistGRAINSTT                 = DistGRAINSTT
             self.DistGRAINECAL                = DistGRAINECAL
             self.DistSTTECAL                  = DistSTTECAL
 
             #************************************************************************|  STT tracker  |**********************************************************************************
-
             self.nofUpstreamTrkMod            = nofUpstreamTrkMod
             self.nofDownstreamTrkMod          = nofDownstreamTrkMod
             self.nofC3H6ModAfterCMod          = nofC3H6ModAfterCMod
@@ -97,6 +97,7 @@ class STTBuilder(gegede.builder.Builder):
 
             print("")
             print("*"*20+" INNVERVOLUME CONFIGURATION "+str(configuration)+" "+"*"*20)
+            print("*"*25+" STT CONFIGURATION "+str(STTconfiguration)+" "+"*"*20)
             print("")
             print("-"*20+" INNERVOLUME INFO "+"-"*20)
             print("")
@@ -229,8 +230,6 @@ class STTBuilder(gegede.builder.Builder):
 
         for mod_id in range(len(self.module_sequence)):
 
-            # if (mod_id<len(self.module_sequence)-4): continue
-
             print("Building STT MODULE "+str(mod_id)+" "+self.module_sequence[mod_id])
             mod_lv       = self.construct_one_mod(geom, main_lv, mod_id) 
             mod_position = geom.structure.Position("mod_"+str(mod_id)+"_pos", self.modules_X_center[mod_id], Q("0m"), Q("0m"))
@@ -312,52 +311,50 @@ class STTBuilder(gegede.builder.Builder):
         main_shape              = geom.shapes.Box(base_name+"_shape", dx=self.ModThickness[module_type]/2, dy=module_half_heigth, dz=self.kloeTrkRegHalfDx )
         main_lv                 = geom.structure.Volume(base_name, material="Air35C", shape=main_shape )
 
-        print("module x pos : "+str(self.modules_X_center[mod_id])+"     module height "+str(module_half_heigth*2))
-
-        # planeXX_name            = base_name+"_planeXX" 
-        # planeYY_name            = base_name+"_planeYY" 
-        # planeXX                 = self.constructStrawPlane(geom, planeXX_name, dy = module_half_heigth - self.FrameThickness,     dz = self.kloeTrkRegHalfDx - self.FrameThickness, gas = self.StrawGas[module_type])
-        # planeYY                 = self.constructStrawPlane(geom, planeYY_name, dy = self.kloeTrkRegHalfDx - self.FrameThickness,  dz = module_half_heigth - self.FrameThickness,    gas = self.StrawGas[module_type])
-        # self.nofStrawTubeConstructed += self.nofStrawCurrentMod * self.nofStrawPlanes[module_type]
+        planeXX_name            = base_name+"_planeXX" 
+        planeYY_name            = base_name+"_planeYY" 
+        planeXX                 = self.constructStrawPlane(geom, planeXX_name, dy = module_half_heigth - self.FrameThickness,     dz = self.kloeTrkRegHalfDx - self.FrameThickness, gas = self.StrawGas[module_type])
+        planeYY                 = self.constructStrawPlane(geom, planeYY_name, dy = self.kloeTrkRegHalfDx - self.FrameThickness,  dz = module_half_heigth - self.FrameThickness,    gas = self.StrawGas[module_type])
+        self.nofStrawTubeConstructed += self.nofStrawCurrentMod * self.nofStrawPlanes[module_type]
         
         
-        # if(module_type!="TrkMod"):
-        #     frame        = self.constructFrame(geom,    base_name,    module_type,    dy = module_half_heigth,                                            dz = self.kloeTrkRegHalfDx)
-        #     target       = self.constructTarget(geom,   base_name,    module_type,    dy = module_half_heigth - self.FrameThickness - self.AddGapForSlab, dz = self.kloeTrkRegHalfDx - self.FrameThickness - self.AddGapForSlab)
-        #     if (self.radiator=="yes" and module_type=='C3H6Mod'):Radiator = self.constructRadiator(geom, base_name,    module_type,    dy = module_half_heigth - self.FrameThickness, dz = self.kloeTrkRegHalfDx - self.FrameThickness)
+        if(module_type!="TrkMod"):
+            frame        = self.constructFrame(geom,    base_name,    module_type,    dy = module_half_heigth,                                            dz = self.kloeTrkRegHalfDx)
+            target       = self.constructTarget(geom,   base_name,    module_type,    dy = module_half_heigth - self.FrameThickness - self.AddGapForSlab, dz = self.kloeTrkRegHalfDx - self.FrameThickness - self.AddGapForSlab)
+            if (self.radiator=="yes" and module_type=='C3H6Mod'):Radiator = self.constructRadiator(geom, base_name,    module_type,    dy = module_half_heigth - self.FrameThickness, dz = self.kloeTrkRegHalfDx - self.FrameThickness)
             
-        #     frame_pos    = geom.structure.Position(base_name+"_frame_pos",Q("0mm"),Q("0mm"),Q("0mm"))
-        #     target_pos   = geom.structure.Position(base_name+"_target_pos",    self.TargetPosInMod(module_type)["X"],   self.TargetPosInMod(module_type)["Y"],   self.TargetPosInMod(module_type)["Z"])
-        #     planeXX_pos  = geom.structure.Position(planeXX_name+"_pos",        self.PlaneXXPosInMod(module_type)["X"],  self.PlaneXXPosInMod(module_type)["Y"],  self.PlaneXXPosInMod(module_type)["Z"])
-        #     planeYY_pos  = geom.structure.Position(planeYY_name+"_pos",        self.PlaneYYPosInMod(module_type)["X"],  self.PlaneYYPosInMod(module_type)["Y"],  self.PlaneYYPosInMod(module_type)["Z"])
-        #     if (self.radiator=="yes" and module_type=='C3H6Mod'):Radiator_pos = geom.structure.Position(base_name+"_radiator_pos",  self.RadiatorPosInMod(module_type)["X"], self.RadiatorPosInMod(module_type)["Y"], self.RadiatorPosInMod(module_type)["Z"])
+            frame_pos    = geom.structure.Position(base_name+"_frame_pos",Q("0mm"),Q("0mm"),Q("0mm"))
+            target_pos   = geom.structure.Position(base_name+"_target_pos",    self.TargetPosInMod(module_type)["X"],   self.TargetPosInMod(module_type)["Y"],   self.TargetPosInMod(module_type)["Z"])
+            planeXX_pos  = geom.structure.Position(planeXX_name+"_pos",        self.PlaneXXPosInMod(module_type)["X"],  self.PlaneXXPosInMod(module_type)["Y"],  self.PlaneXXPosInMod(module_type)["Z"])
+            planeYY_pos  = geom.structure.Position(planeYY_name+"_pos",        self.PlaneYYPosInMod(module_type)["X"],  self.PlaneYYPosInMod(module_type)["Y"],  self.PlaneYYPosInMod(module_type)["Z"])
+            if (self.radiator=="yes" and module_type=='C3H6Mod'):Radiator_pos = geom.structure.Position(base_name+"_radiator_pos",  self.RadiatorPosInMod(module_type)["X"], self.RadiatorPosInMod(module_type)["Y"], self.RadiatorPosInMod(module_type)["Z"])
 
-        #     frame_pla    = geom.structure.Placement(base_name+"_frame_pla",     volume = frame,    pos = frame_pos)
-        #     target_pla   = geom.structure.Placement(base_name+"_target_pla",    volume = target,   pos = target_pos)
-        #     planeXX_pla  = geom.structure.Placement(planeXX_name+"_pla",        volume = planeXX,  pos = planeXX_pos)
-        #     planeYY_pla  = geom.structure.Placement(planeYY_name+"_pla",        volume = planeYY,  pos = planeYY_pos, rot= "r90aboutX")
-        #     if (self.radiator=="yes" and module_type=='C3H6Mod'):Radiator_pla = geom.structure.Placement(base_name+"_radiator_pla",  volume = Radiator, pos = Radiator_pos)
+            frame_pla    = geom.structure.Placement(base_name+"_frame_pla",     volume = frame,    pos = frame_pos)
+            target_pla   = geom.structure.Placement(base_name+"_target_pla",    volume = target,   pos = target_pos)
+            planeXX_pla  = geom.structure.Placement(planeXX_name+"_pla",        volume = planeXX,  pos = planeXX_pos)
+            planeYY_pla  = geom.structure.Placement(planeYY_name+"_pla",        volume = planeYY,  pos = planeYY_pos, rot= "r90aboutX")
+            if (self.radiator=="yes" and module_type=='C3H6Mod'):Radiator_pla = geom.structure.Placement(base_name+"_radiator_pla",  volume = Radiator, pos = Radiator_pos)
 
-        #     main_lv.placements.append(frame_pla.name)
-        #     main_lv.placements.append(target_pla.name)
-        #     if (self.radiator=="yes" and module_type=='C3H6Mod'): main_lv.placements.append(Radiator_pla.name)
-        #     main_lv.placements.append(planeXX_pla.name)
-        #     main_lv.placements.append(planeYY_pla.name)
+            main_lv.placements.append(frame_pla.name)
+            main_lv.placements.append(target_pla.name)
+            if (self.radiator=="yes" and module_type=='C3H6Mod'): main_lv.placements.append(Radiator_pla.name)
+            main_lv.placements.append(planeXX_pla.name)
+            main_lv.placements.append(planeYY_pla.name)
 
 
-        # else:
+        else:
 
-        #     planeXX1_pos = geom.structure.Position(planeXX_name+"1_pos",self.PlaneXX1PosInTrkMod["X"],self.PlaneXX1PosInTrkMod["Y"],self.PlaneXX1PosInTrkMod["Z"])
-        #     planeYY_pos  = geom.structure.Position(planeYY_name+"_pos" ,self.PlaneYYPosInTrkMod["X"], self.PlaneYYPosInTrkMod["Y"], self.PlaneYYPosInTrkMod["Z"])
-        #     planeXX2_pos = geom.structure.Position(planeXX_name+"2_pos",self.PlaneXX2PosInTrkMod["X"],self.PlaneXX2PosInTrkMod["Y"],self.PlaneXX2PosInTrkMod["Z"])
+            planeXX1_pos = geom.structure.Position(planeXX_name+"1_pos",self.PlaneXX1PosInTrkMod["X"],self.PlaneXX1PosInTrkMod["Y"],self.PlaneXX1PosInTrkMod["Z"])
+            planeYY_pos  = geom.structure.Position(planeYY_name+"_pos" ,self.PlaneYYPosInTrkMod["X"], self.PlaneYYPosInTrkMod["Y"], self.PlaneYYPosInTrkMod["Z"])
+            planeXX2_pos = geom.structure.Position(planeXX_name+"2_pos",self.PlaneXX2PosInTrkMod["X"],self.PlaneXX2PosInTrkMod["Y"],self.PlaneXX2PosInTrkMod["Z"])
 
-        #     planeXX1_pla = geom.structure.Placement(planeXX_name+"1_pla", volume = planeXX, pos = planeXX1_pos)
-        #     planeYY_pla  = geom.structure.Placement(planeYY_name+"_pla",  volume = planeYY, pos = planeYY_pos, rot= "r90aboutX")
-        #     planeXX2_pla = geom.structure.Placement(planeXX_name+"2_pla", volume = planeXX, pos = planeXX2_pos)
+            planeXX1_pla = geom.structure.Placement(planeXX_name+"1_pla", volume = planeXX, pos = planeXX1_pos)
+            planeYY_pla  = geom.structure.Placement(planeYY_name+"_pla",  volume = planeYY, pos = planeYY_pos, rot= "r90aboutX")
+            planeXX2_pla = geom.structure.Placement(planeXX_name+"2_pla", volume = planeXX, pos = planeXX2_pos)
 
-        #     main_lv.placements.append(planeXX1_pla.name)
-        #     main_lv.placements.append(planeYY_pla.name)
-        #     main_lv.placements.append(planeXX2_pla.name)
+            main_lv.placements.append(planeXX1_pla.name)
+            main_lv.placements.append(planeYY_pla.name)
+            main_lv.placements.append(planeXX2_pla.name)
             
         return main_lv
 
