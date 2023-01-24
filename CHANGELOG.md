@@ -8,6 +8,12 @@ Geometry releases will be tagged as `Descriptive_tag_v_X.Y.Z`.
 
 ## [Unreleased]
 
+## Changed
+
+- Changed drift length and ND gaps to reflect ND CAD gap lengths. 
+
+## [Unreleased]
+
 ## Fixed
 
 - Fixed use of TGeoManager::Import in scripts.
