@@ -454,7 +454,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/SAND_ECAL.cfg \
            duneggd/Config/SAND_STT/STT1.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
-           -w World -o test_SAND_opt2_STT1.gdml
+           -w World -o test_SAND_opt2_STT1_5Mod.gdml
 fi
 
 if [ $option = "all" -o $option = "test_sand_opt2_STT2" ];
@@ -480,7 +480,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/SAND_ECAL.cfg \
            duneggd/Config/SAND_STT/STT3.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
-           -w World -o test_SAND_opt2_STT3.gdml
+           -w World -o test_SAND_opt2_STT3_onlySAND.gdml
 fi
 
 # KLOE anti-fiducial

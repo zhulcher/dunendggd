@@ -437,7 +437,7 @@ class STTBuilder(gegede.builder.Builder):
         if(self.StrawPlug!=Q("0mm")):
             ring_name           = straw_name+"_ring"
             ring_shape          = geom.shapes.Tubs(ring_name+"_shape", rmin = self.StrawRadius, rmax = self.StrawRadius + self.StrawPlug, dz=straw_half_length)
-            ring_lv             = geom.structure.Volume(ring_name, material="C3H6", shape = ring_shape)
+            ring_lv             = geom.structure.Volume(ring_name, material="Air35C", shape = ring_shape)
             ring_pla            = geom.structure.Placement(ring_name+"_place", volume = ring_lv)
 
         # coat
