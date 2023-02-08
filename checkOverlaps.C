@@ -7,7 +7,7 @@ void checkOverlaps(TString filename, Int_t method =0)
   if(method==1){
     cout<<"======================== Checking Overlaps with samplig method ============================="<<endl;
     cout<<"Enter Method: "<<endl;
-    geo->CheckOverlaps(1e-6,"s");
+    geo->CheckOverlaps(1e-5,"s");
     geo->PrintOverlaps();
     cout<<"========================       Done!       =============================\n\n\n"<<endl;
     if(not gROOT->IsBatch()){
@@ -26,7 +26,7 @@ void checkOverlaps(TString filename, Int_t method =0)
     }
   } else {
     cout<<"======================== Checking Overlaps with Standard Method ============================="<<endl;
-    geo->CheckOverlaps(1e-6);
+    geo->CheckOverlaps(1e-5);
     geo->PrintOverlaps();
     cout<<"========================       Done!       =============================\n\n\n"<<endl;
     if(not gROOT->IsBatch()){
