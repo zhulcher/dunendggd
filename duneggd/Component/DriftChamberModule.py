@@ -78,8 +78,10 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         MylarPlane_lv       = self.constructMylarPlane(geom, driftChamber_name)
         # construct module with no wire inclination
         DriftModuleX_lv     = self.constructDriftModule(geom, driftChamber_name)
+        DriftModuleX_lv.params.append(("SensDet","DriftModuleX"))
         # construct module with inclination
         DriftModuleXY_lv    = self.constructDriftModule(geom, driftChamber_name, self.WireAngle)
+        DriftModuleXY_lv.params.append(("SensDet","DriftModuleXY"))
 
         running_x           = -self.DriftChamberThickness/2
         running_drift_vol   = DriftModuleX_lv
