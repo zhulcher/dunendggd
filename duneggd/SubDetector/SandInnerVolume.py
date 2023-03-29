@@ -3,7 +3,7 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 class SandInnerVolumeBuilder(gegede.builder.Builder):
-    def configure( self, halfDimension=None, Material=None, nBarrelModules=None, liqArThickness=None, **kwds):
+    def configure( self, halfDimension=None, Material=None, nBarrelModules=None, liqArThickness=None, DistGRAINECAL=None,**kwds):
         self.halfDimension = halfDimension
         self.Material =      Material
         self.kloeVesselRadius       = self.halfDimension['rmax']
@@ -11,6 +11,7 @@ class SandInnerVolumeBuilder(gegede.builder.Builder):
         self.nBarrelModules         = nBarrelModules
         self.rotAngle               = 0.5 * Q('360deg') / self.nBarrelModules
         self.liqArThickness         = liqArThickness
+        self.DistGRAINECAL          = DistGRAINECAL
 
     def construct(self,geom):
         sand_inner_volume_shape=geom.shapes.PolyhedraRegular("sand_inner_volume_shape",numsides=self.nBarrelModules, rmin=Q('0cm'), rmax=self.kloeVesselRadius , dz=self.kloeVesselHalfDx, sphi=self.rotAngle)
