@@ -36,8 +36,9 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
         el_lv = sb.get_volume()
 
         # get the sub-builder dimension, using its shape
-        el_shape = geom.store.shapes.get(el_lv.shape)
-        el_dim = [el_shape.dx, el_shape.dy, el_shape.dz]
+        #el_shape = geom.store.shapes.get(el_lv.shape)
+        el_dim = [sb.dx, sb.dy, sb.dz]
+        print("el_dim_test",el_dim)
         #el_dim = ltools.getShapeDimensions( el_lv, geom )
 
         # calculate half dimension of element plus the gap projected to the transportation vector

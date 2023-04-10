@@ -34,10 +34,12 @@ def define_materials( g ):
                             isotopes=(("copper63",0.6917),
                                       ("copper65",0.3083)) )
 
-    zn64=g.matter.Isotope("zinc64", 30, 64, "63.93*g/mole")
+    # zn64=g.matter.Isotope("zinc64", 30, 64, "63.93*g/mole")
 
-    zn= g.matter.Composition("zinc",
-                             isotopes=(("zinc64",1.0),) ) # Note: odd syntax ((a,b),) defines a tuple of tuples with one element
+    # zn= g.matter.Composition("zinc",
+    #                          isotopes=(("zinc64",1.0),) ) # Note: odd syntax ((a,b),) defines a tuple of tuples with one element
+
+    zn=g.matter.Element("zinc",         "Zn", 30, "63.93*g/mole")
 
     br = g.matter.Element("bromine",    "Br", 35, "79.904*g/mole" )
 #    sb = g.matter.Element("antimony",   "Sb", 51, "121.76*g/mole" )
