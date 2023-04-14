@@ -10,6 +10,7 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, moduleDx=None, moduleHeight=None,
                         NofDriftModules=None, DriftModulesWireAngles=None,
+                        frameThickness=None,
                         targetThickness=None, targetMaterial=None, MylarThickness=None,
                         DriftModuleThickness=None, DriftChamberGas=None,
                         FieldWireRadius=None, SignalWireRadius=None, WireMaterial=None,WireAngle=None,WireWireDistance=None,
@@ -21,6 +22,8 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         self.DriftModulesWireAngles = DriftModulesWireAngles
         self.DriftChamberGas        = DriftChamberGas
         self.DriftModuleThickness   = DriftModuleThickness
+
+        self.frameThickness         = frameThickness
 
         self.targetThickness        = targetThickness
         self.targetMaterial         = targetMaterial
@@ -43,13 +46,17 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
     
     def constructModule(self,geom):
 
-        main_lv          = self.constructBox(geom, "prototype_",(self.targetThickness+self.DriftChamberThickness)/2, self.moduleHeight/2, self.moduleDx/2, "Air35C")
+        main_lv          = self.constructBox(geom, "prototype", self.moduleThickness/2, self.moduleHeight/2 + self.frameThickness, self.moduleDx/2 +  self.frameThickness, "Air35C")
+
+        frame_lv         = self.constructFrame(geom, "frame", self.moduleHeight/2, self.moduleDx/2)
         
-        target_lv        = self.constructBox(geom, main_lv.name + "target", self.targetThickness/2, self.moduleHeight/2, self.moduleDx/2, self.targetMaterial)
+        target_lv        = self.constructBox(geom, "target", self.targetThickness/2, self.moduleHeight/2 - self.frameThickness, self.moduleDx/2 - self.frameThickness, self.targetMaterial)
         
-        drift_chamber_lv = self.constructBox(geom, main_lv.name + "drift_volume", self.DriftChamberThickness/2, self.moduleHeight/2, self.moduleDx/2, "Air35C") 
+        drift_chamber_lv = self.constructBox(geom, "drift_volume", self.DriftChamberThickness/2, self.moduleHeight/2 - self.frameThickness, self.moduleDx/2 - self.frameThickness, "Air35C") 
 
         self.FillDriftChamber(geom, drift_chamber_lv)
+
+        self.PlaceSubVolume(geom, main_lv, frame_lv)
 
         self.PlaceSubVolume(geom, main_lv, target_lv, pos_x = -self.moduleThickness/2 + self.targetThickness/2)
         
@@ -59,8 +66,8 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         print("target_lv type : ",type(target_lv))
         print(target_lv.shape)
         print(geom.store.shapes.get(target_lv.shape))
-        print(geom.get_shape('prototype_target_shape')[1])
-        print(geom.store.shapes.get('prototype_target_shape')[1])
+        print(geom.get_shape('target_shape')[1])
+        print(geom.store.shapes.get('target_shape')[1])
         print(" ")
 
         return main_lv
@@ -149,6 +156,16 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         box       = geom.structure.Volume(name, material = material, shape = box_shape)
         return box
     
+    def constructFrame(self, geom, name, half_h, half_l):
+        outer_box  = geom.shapes.Box(name + "_out_shape", dx = self.moduleThickness/2, dy = half_h, dz = half_l)
+        inner_box  = geom.shapes.Box(name + "_in_shape", dx = self.moduleThickness/2, dy = half_h - self.frameThickness, dz = half_l - self.frameThickness)
+
+        shape = geom.shapes.Boolean(name+"_shape", type = "subtraction", first = outer_box, second = inner_box, rot='noRotate')
+
+        frame = geom.structure.Volume(name, material = "carbonComposite", shape = shape)
+        return frame 
+
+    
     def PlaceSubVolume(self, geom, volume, subvolume, pos_x=Q("0mm"), pos_y=Q("0mm"), pos_z=Q("0mm"), rot_x=Q("0deg"), rot_y=Q("0deg"), rot_z=Q("0deg"), label=""):
 
         name = subvolume.name + label
@@ -157,3 +174,4 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         place    = geom.structure.Placement(name + "_place", volume = subvolume.name, pos = position.name, rot = rotation.name)
         
         volume.placements.append(place.name)
+    
