@@ -9,23 +9,25 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
     
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, moduleDx=None, moduleHeight=None,
-                        targetThickness=None, targetMaterial=None,
-                        DriftModuleThickness=None, DriftChamberGas=None, NofDriftModules=None,MylarThickness=None,
-                        FieldWireRadius=None, SignalWireRadius=None, WireMaterial=None, WireAngle=None, WireWireDistance=None,
+                        NofDriftModules=None, DriftModulesWireAngles=None,
+                        targetThickness=None, targetMaterial=None, MylarThickness=None,
+                        DriftModuleThickness=None, DriftChamberGas=None,
+                        FieldWireRadius=None, SignalWireRadius=None, WireMaterial=None,WireAngle=None,WireWireDistance=None,
                         **kwds):
-        
+
         self.moduleDx               = moduleDx
         self.moduleHeight           = moduleHeight
+        self.NofDriftModules        = NofDriftModules
+        self.DriftModulesWireAngles = DriftModulesWireAngles
+        self.DriftChamberGas        = DriftChamberGas
+        self.DriftModuleThickness   = DriftModuleThickness
 
         self.targetThickness        = targetThickness
         self.targetMaterial         = targetMaterial
-        
-        self.DriftModuleThickness   = DriftModuleThickness
-        self.DriftChamberGas        = DriftChamberGas
-        self.NofDriftModules        = NofDriftModules
         self.MylarThickness         = MylarThickness
+        
         self.DriftChamberThickness  = self.DriftModuleThickness * self.NofDriftModules + self.MylarThickness*(self.NofDriftModules + 1)
-        self.moduleThickness        = targetThickness + self.DriftChamberThickness
+        self.moduleThickness        = self.targetThickness + self.DriftChamberThickness
 
         self.FieldWireRadius        = FieldWireRadius
         self.SignalWireRadius       = SignalWireRadius
@@ -36,143 +38,122 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
     def construct(self, geom):
         print("DriftChamberModuleBuilder::construct()")
         materials.define_materials(geom)
-
         main_lv = self.constructModule(geom)
         self.add_volume(main_lv)
     
     def constructModule(self,geom):
 
-        module_name = "prototype_"
-        main_shape  = geom.shapes.Box(module_name+"_shape", dx=(self.targetThickness+self.DriftChamberThickness)/2, dy=self.moduleHeight/2, dz=self.moduleDx/2)
-        main_lv     = geom.structure.Volume(module_name, material="Air35C",shape=main_shape)
-
-        target_lv               = self.constructTarget(geom, module_name)
-        drift_chamber_lv        = self.constructDriftChamber(geom, module_name)
+        main_lv          = self.constructBox(geom, "prototype_",(self.targetThickness+self.DriftChamberThickness)/2, self.moduleHeight/2, self.moduleDx/2, "Air35C")
         
-        target_position         = geom.structure.Position(target_lv.name+"_pos", -self.moduleThickness/2+self.targetThickness/2, Q("0m"), Q("0m"))
-        drift_chamber_position  = geom.structure.Position(drift_chamber_lv.name+"_pos", -self.moduleThickness/2+self.targetThickness+self.DriftChamberThickness/2, Q("0m"), Q("0m"))
+        target_lv        = self.constructBox(geom, main_lv.name + "target", self.targetThickness/2, self.moduleHeight/2, self.moduleDx/2, self.targetMaterial)
+        
+        drift_chamber_lv = self.constructBox(geom, main_lv.name + "drift_volume", self.DriftChamberThickness/2, self.moduleHeight/2, self.moduleDx/2, "Air35C") 
 
-        target_place            = geom.structure.Placement(target_lv.name+"_place",volume=target_lv.name, pos=target_position.name)
-        drift_chamber_place     = geom.structure.Placement(drift_chamber_lv.name+"_place",volume=drift_chamber_lv.name, pos=drift_chamber_position.name)  
+        self.FillDriftChamber(geom, drift_chamber_lv)
 
-        main_lv.placements.append(target_place.name)
-        main_lv.placements.append(drift_chamber_place.name)
+        self.PlaceSubVolume(geom, main_lv, target_lv, pos_x = -self.moduleThickness/2 + self.targetThickness/2)
+        
+        self.PlaceSubVolume(geom, main_lv, drift_chamber_lv, pos_x = -self.moduleThickness/2 + self.targetThickness + self.DriftChamberThickness/2)
+        
+        print(" ")
+        print("target_lv type : ",type(target_lv))
+        print(target_lv.shape)
+        print(geom.store.shapes.get(target_lv.shape))
+        print(geom.get_shape('prototype_target_shape')[1])
+        print(geom.store.shapes.get('prototype_target_shape')[1])
+        print(" ")
 
         return main_lv
-    
-    def constructTarget(self,geom, base_name):
 
-        target_name         = base_name + "target"
-        target_shape        = geom.shapes.Box(target_name+"_shape",dx=self.targetThickness/2,dy=self.moduleHeight/2,dz=self.moduleDx/2)
-        target_lv           = geom.structure.Volume(target_name, material=self.targetMaterial, shape=target_shape)
+    def FillDriftChamber(self,geom, drift_volume):
 
-        return target_lv
+        half_dx, half_h, half_l     = geom.get_shape(drift_volume.shape)[1:]
 
-    def constructDriftChamber(self,geom, base_name):
+        MylarPlane_lv               = self.constructBox(geom, drift_volume.name + "_mylar", self.MylarThickness/2, half_h, half_l, "Mylar")
 
-        driftChamber_name   = base_name + "drift_chamber"
-        driftChamber_shape  = geom.shapes.Box(driftChamber_name+"_shape",dx=self.DriftChamberThickness/2,dy=self.moduleHeight/2,dz=self.moduleDx/2)
-        driftChamber_lv     = geom.structure.Volume(driftChamber_name, material=self.DriftChamberGas, shape=driftChamber_shape)
-
-        # construct mylar planes
-        MylarPlane_lv       = self.constructMylarPlane(geom, driftChamber_name)
-        # construct module with no wire inclination
-        DriftModuleX_lv     = self.constructDriftModule(geom, driftChamber_name)
-        DriftModuleX_lv.params.append(("SensDet","DriftModuleX"))
-        # construct module with inclination
-        DriftModuleXY_lv    = self.constructDriftModule(geom, driftChamber_name, self.WireAngle)
-        DriftModuleXY_lv.params.append(("SensDet","DriftModuleXY"))
-
-        running_x           = -self.DriftChamberThickness/2
-        running_drift_vol   = DriftModuleX_lv
-        running_rotationY   = Q("0deg")
+        running_x                   = - half_dx
 
         for i in range(self.NofDriftModules):
-            # place mylar plane
+            
             running_x           += self.MylarThickness/2
 
-            Mylar_name           = MylarPlane_lv.name+"_"+str(i)
-            MylarPlane_position  = geom.structure.Position(Mylar_name+"_pos", running_x, Q("0mm"), Q("0mm"))
-            MylarPlane_place     = geom.structure.Placement(Mylar_name+"_place", volume = MylarPlane_lv, pos = MylarPlane_position)
+            self.PlaceSubVolume(geom, drift_volume, MylarPlane_lv, pos_x = running_x, label = "_"+str(i))
  
-            # place driftModule 
             running_x           += self.MylarThickness/2 + self.DriftModuleThickness/2
+            
+            if self.DriftModulesWireAngles[i] == Q("90deg"):
+                DriftModule_lv       = self.constructBox(geom, "drift_module"+str(i), self.DriftModuleThickness/2, half_l, half_h, self.DriftChamberGas)
+                rot_x = Q("90deg")
+            else:
+                DriftModule_lv       = self.constructBox(geom, "drift_module"+str(i), self.DriftModuleThickness/2, half_h, half_l, self.DriftChamberGas)
+                rot_x = Q("0deg")
 
-            DriftModule_name     = running_drift_vol.name+"_"+str(i)
-            DriftModule_position = geom.structure.Position(DriftModule_name+"_pos", running_x, Q("0mm"), Q("0mm"))
-            DriftModule_rotation = geom.structure.Rotation(DriftModule_name+"_rot", Q("0deg"), running_rotationY, Q("0deg"))
-            DriftModule_place    = geom.structure.Placement(DriftModule_name+"_place", volume = running_drift_vol, pos = DriftModule_position, rot = DriftModule_rotation)
+            self.FillDriftModule(geom, DriftModule_lv)
+
+            self.PlaceSubVolume(geom, drift_volume, DriftModule_lv, pos_x = running_x, rot_x = rot_x, label = "_"+str(i))
 
             running_x           += self.DriftModuleThickness/2
-            running_drift_vol    = DriftModuleXY_lv
-            running_rotationY   +=Q("180deg")
 
-            driftChamber_lv.placements.append(MylarPlane_place.name)
-            driftChamber_lv.placements.append(DriftModule_place.name)
-
-        #place last mylar plane
         running_x           += self.MylarThickness/2
-        Mylar_name           = MylarPlane_lv.name+"_"+str(self.NofDriftModules+1)
-        MylarPlane_position  = geom.structure.Position(Mylar_name+"_pos", running_x, Q("0mm"), Q("0mm"))
-        MylarPlane_place     = geom.structure.Placement(Mylar_name+"_place", volume = MylarPlane_lv, pos = MylarPlane_position)
 
-        driftChamber_lv.placements.append(MylarPlane_place.name)
+        self.PlaceSubVolume(geom, drift_volume, MylarPlane_lv, pos_x = running_x, label = "_"+str(self.NofDriftModules+1))
 
-        return driftChamber_lv
     
-    def constructDriftModule(self, geom, base_name, wire_angle=Q("0deg")):
-        orientation=""
-        if wire_angle == 0:
-            orientation = "X"
-        else:
-            orientation = "XY"
+    def FillDriftModule(self, geom, drift_module):
+        
+        half_dx, half_h, half_l = geom.get_shape(drift_module.shape)[1:]
 
-        chamber_name    = base_name+"_module"+orientation
-        thickness       = self.DriftModuleThickness
-        chamber_shape   = geom.shapes.Box(chamber_name+"_shape",dx=thickness/2,dy=self.moduleHeight/2,dz=self.moduleDx/2)
-        chamber_lv      = geom.structure.Volume(chamber_name, material=self.DriftChamberGas, shape=chamber_shape)
+        module_number           = int(drift_module.name[-1])
+        
+        staggered               = (module_number%2)
+        
+        wire_angle              = self.DriftModulesWireAngles[module_number]
 
-        AvailableSpaceY = self.moduleHeight - self.moduleDx * math.sin(self.WireAngle)
+        FieldWire_lv            = self.constructWire(geom, drift_module.name, half_l*2, Q("0deg"), "F")
+        SignalWire_lv           = self.constructWire(geom, drift_module.name, half_l*2, Q("0deg"), "S")
 
-        nof_wires       = int(AvailableSpaceY/(self.WireWireDistance + max(self.FieldWireRadius, self.SignalWireRadius)*2))
+        wire_index, nof_wires, running_wire = 0, 0, FieldWire_lv
+        
+        running_y = half_h - 1.5*(self.WireWireDistance + self.FieldWireRadius) if staggered else half_h - (self.WireWireDistance + self.FieldWireRadius)
+        
+        while(running_y > - half_h):
 
-        LeftSpaceY      = AvailableSpaceY - (self.WireWireDistance + max(self.FieldWireRadius, self.SignalWireRadius)*2) * nof_wires
+            self.PlaceSubVolume(geom, drift_module, running_wire, pos_y = running_y, label = "_" + str(wire_index).zfill(3))
+            nof_wires  += 1
+            wire_index += 1
 
-        running_y       = (self.moduleHeight - LeftSpaceY)/2 - self.moduleDx/2*math.sin(self.WireAngle) - self.FieldWireRadius # where to start building
-
-        SignalWire_lv   = self.constructWire(geom, chamber_name, wire_angle, "S")
-        FieldWire_lv    = self.constructWire(geom, chamber_name, wire_angle, "F")
-
-
-        for i in range(nof_wires):
-
-            volume     = SignalWire_lv if i%2 else FieldWire_lv 
-            wire_name  = volume.name+"_"+str(i).zfill(3)
-            wire_pos   = geom.structure.Position(wire_name+"_pos", Q("0m"), running_y, Q('0m'))
-            wire_rot   = geom.structure.Rotation(wire_name+"_rot", wire_angle, Q("0deg"), Q("0deg"))
-            wire_place = geom.structure.Placement(wire_name+"_place", volume = volume.name, pos = wire_pos.name, rot = wire_rot)
+            running_wire = (FieldWire_lv,SignalWire_lv)[wire_index % 2]
 
             running_y -= (self.WireWireDistance + self.FieldWireRadius + self.SignalWireRadius)
-            
-            chamber_lv.placements.append(wire_place.name)
-        
-        print("chamber : "+chamber_lv.name+" , nof_wires build "+str(nof_wires))
 
-        return chamber_lv
-    
-    def constructMylarPlane(self, geom, base_name):
+        print(" ")
+        print("drift module : "+drift_module.name)
+        print("nof_wires build : "+str(nof_wires))
+        print("module height : "+str(half_h*2))
+        print("module length : "+str(half_l*2))
 
-        mylar_name    = base_name+"_mylar"
-        mylar_shape   = geom.shapes.Box(mylar_name+"_shape",dx=self.MylarThickness/2,dy=self.moduleHeight/2,dz=self.moduleDx/2)
-        mylar_lv      = geom.structure.Volume(mylar_name, material="Mylar", shape=mylar_shape)
-        
-        return mylar_lv
     
-    def constructWire(self, geom, base_name, wire_angle, wire_type):
+    def constructWire(self, geom, base_name, length, wire_angle, wire_type):
 
         wire_name           = base_name+"_"+wire_type+"wire"
         r                   = self.SignalWireRadius if wire_type=="S" else self.FieldWireRadius
-        wire_shape          = geom.shapes.Tubs(wire_name+"_shape", rmin = Q("0mm"), rmax = r, dz=self.moduleDx/2)
+        wire_shape          = geom.shapes.Tubs(wire_name+"_shape", rmin = Q("0mm"), rmax = r, dz=length/2)
         wire_lv             = geom.structure.Volume(wire_name, material = self.WireMaterial, shape = wire_shape)
+        print(wire_type+"wire length : "+str(length))
 
         return wire_lv
+    
+    def constructBox(self, geom, name, half_thickness, half_heigth, half_length, material):
+        
+        box_shape = geom.shapes.Box(name+"_shape", dx = half_thickness, dy = half_heigth, dz = half_length)
+        box       = geom.structure.Volume(name, material = material, shape = box_shape)
+        return box
+    
+    def PlaceSubVolume(self, geom, volume, subvolume, pos_x=Q("0mm"), pos_y=Q("0mm"), pos_z=Q("0mm"), rot_x=Q("0deg"), rot_y=Q("0deg"), rot_z=Q("0deg"), label=""):
+
+        name = subvolume.name + label
+        position = geom.structure.Position(name + "_pos", pos_x, pos_y, pos_z)
+        rotation = geom.structure.Rotation(name + "_rot", rot_x, rot_y, rot_z)
+        place    = geom.structure.Placement(name + "_place", volume = subvolume.name, pos = position.name, rot = rotation.name)
+        
+        volume.placements.append(place.name)
