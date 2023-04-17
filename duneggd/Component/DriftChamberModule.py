@@ -46,7 +46,7 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
     
     def constructModule(self,geom):
 
-        main_lv          = self.constructBox(geom, "prototype", self.moduleThickness/2, self.moduleHeight/2 + self.frameThickness, self.moduleDx/2 +  self.frameThickness, "Air35C")
+        main_lv          = self.constructBox(geom, "prototype", self.moduleThickness/2, self.moduleHeight/2, self.moduleDx/2, "Air35C")
 
         frame_lv         = self.constructFrame(geom, "frame", self.moduleHeight/2, self.moduleDx/2)
         
@@ -62,13 +62,13 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         
         self.PlaceSubVolume(geom, main_lv, drift_chamber_lv, pos_x = -self.moduleThickness/2 + self.targetThickness + self.DriftChamberThickness/2)
         
-        print(" ")
-        print("target_lv type : ",type(target_lv))
-        print(target_lv.shape)
-        print(geom.store.shapes.get(target_lv.shape))
-        print(geom.get_shape('target_shape')[1])
-        print(geom.store.shapes.get('target_shape')[1])
-        print(" ")
+        # print(" ")
+        # print("target_lv type : ",type(target_lv))
+        # print(target_lv.shape)
+        # print(geom.store.shapes.get(target_lv.shape))
+        # print(geom.get_shape('target_shape')[1])
+        # print(geom.store.shapes.get('target_shape')[1])
+        # print(" ")
 
         return main_lv
 
@@ -116,6 +116,11 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         
         wire_angle              = self.DriftModulesWireAngles[module_number]
 
+        print(" ")
+        print("drift module : "+drift_module.name)
+        print("module height : "+str(half_h*2))
+        print("module length : "+str(half_l*2))
+
         FieldWire_lv            = self.constructWire(geom, drift_module.name, half_l*2, Q("0deg"), "F")
         SignalWire_lv           = self.constructWire(geom, drift_module.name, half_l*2, Q("0deg"), "S")
 
@@ -133,12 +138,8 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
 
             running_y -= (self.WireWireDistance + self.FieldWireRadius + self.SignalWireRadius)
 
-        print(" ")
-        print("drift module : "+drift_module.name)
         print("nof_wires build : "+str(nof_wires))
-        print("module height : "+str(half_h*2))
-        print("module length : "+str(half_l*2))
-
+        print(" ")
     
     def constructWire(self, geom, base_name, length, wire_angle, wire_type):
 
