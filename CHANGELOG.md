@@ -8,15 +8,17 @@ Geometry releases will be tagged as `Descriptive_tag_v_X.Y.Z`.
 
 ## [Unreleased]
 
-- Nothing
+### Removed
+
+- Removed old gdml files from repo.
 
 ## [TDR_Production_geometry_v_1.0.3]
 
-## Fixed
+### Fixed
 
 - Fixed use of TGeoManager::Import in scripts.
 
-## Changed
+### Changed
 
 - Changed drift length and ND gaps to reflect ND CAD gap lengths.
 - `checkOverlaps.C` now takes an optional argument to choose the overlap checking method.
@@ -24,11 +26,11 @@ Geometry releases will be tagged as `Descriptive_tag_v_X.Y.Z`.
 
 ## [TDR_Production_geometry_v_1.0.2]
 
-## Fixed
+### Fixed
 
 - Fixed Overlaps in TMS geometry.
 
-## Changed
+### Changed
 - `checkOverlaps.C` now uses sampling method.
 
 ## [TDR_Production_geometry_v_1.0.1]
