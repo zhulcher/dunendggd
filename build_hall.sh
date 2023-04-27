@@ -444,44 +444,31 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            -w World -o SAND_opt2_STT3.gdml
 fi
 
-if [ $option = "all" -o $option = "test_sand_opt2_STT1" ];
+if [ $option = "all" -o $option = "test_sand_drift" ];
 then
 gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_Hall_Air_Volume_Only_SAND.cfg \
            duneggd/Config/ND_Hall_Rock.cfg \
            duneggd/Config/SAND_MAGNET.cfg \
-           duneggd/Config/SAND_INNERVOLOPT2.cfg \
+           duneggd/Config/SAND_INNERVOLOPTDRIFT.cfg \
            duneggd/Config/SAND_ECAL.cfg \
-           duneggd/Config/SAND_STT/STT1.cfg \
+           duneggd/Config/SAND_DRIFT_CHAMBER/DRIFT1.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
-           -w World -o test_SAND_opt2_STT1_5Mod.gdml
+           -w World -o test_SAND_DRIFT.gdml
 fi
 
-if [ $option = "all" -o $option = "test_sand_opt2_STT2" ];
-then
-gegede-cli duneggd/Config/WORLDggd.cfg \
-           duneggd/Config/ND_Hall_Air_Volume_Only_SAND.cfg \
-           duneggd/Config/ND_Hall_Rock.cfg \
-           duneggd/Config/SAND_MAGNET.cfg \
-           duneggd/Config/SAND_INNERVOLOPT2.cfg \
-           duneggd/Config/SAND_ECAL.cfg \
-           duneggd/Config/SAND_STT/STT2.cfg \
-           duneggd/Config/SAND_GRAIN.cfg \
-           -w World -o test_SAND_opt2_STT2.gdml
-fi
-
-if [ $option = "all" -o $option = "test_sand_opt2_STT3" ];
-then
-gegede-cli duneggd/Config/WORLDggd.cfg \
-           duneggd/Config/ND_Hall_Air_Volume_Only_SAND.cfg \
-           duneggd/Config/ND_Hall_Rock.cfg \
-           duneggd/Config/SAND_MAGNET.cfg \
-           duneggd/Config/SAND_INNERVOLOPT2.cfg \
-           duneggd/Config/SAND_ECAL.cfg \
-           duneggd/Config/SAND_STT/STT3.cfg \
-           duneggd/Config/SAND_GRAIN.cfg \
-           -w World -o test_SAND_opt2_STT3_onlySAND.gdml
-fi
+# if [ $option = "all" -o $option = "test_sand_opt2_STT1" ];
+# then
+# gegede-cli duneggd/Config/WORLDggd.cfg \
+#            duneggd/Config/ND_Hall_Air_Volume_Only_SAND.cfg \
+#            duneggd/Config/ND_Hall_Rock.cfg \
+#            duneggd/Config/SAND_MAGNET.cfg \
+#            duneggd/Config/SAND_INNERVOLOPT2.cfg \
+#            duneggd/Config/SAND_ECAL.cfg \
+#            duneggd/Config/SAND_STT/STT1.cfg \
+#            duneggd/Config/SAND_GRAIN.cfg \
+#            -w World -o test_SAND_opt2_STT1_5Mod.gdml
+# fi
 
 # KLOE anti-fiducial
 if [ $option = "all" -o $option = "kloe_antifid" ];

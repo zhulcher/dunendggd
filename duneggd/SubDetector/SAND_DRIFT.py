@@ -1,0 +1,270 @@
+import gegede.builder
+from duneggd.LocalTools import localtools as ltools
+import math
+from gegede import Quantity as Q
+import time
+
+class DRIFTBuilder(gegede.builder.Builder):
+
+    def configure(self, 
+                # sand inner volume info
+                configuration = None,tracker_configuration=None, nBarrelModules = None, halfDimension = None, Material = None, GRAINThickness = None, 
+                clearenceECALGRAIN = None, clearenceGRAINTracker = None, clearenceTrackerECAL = None, clearenceSupermods = None,
+                # tracker
+                nofUpstreamTrkMod = None, nofDownstreamTrkMod = None, nofC3H6ModAfterCMod = None,
+                # tracker module
+                frameThickness = None, frameMaterial = None, targetThickness = None, MylarThickness = None, NofDriftModules = None, DriftModulesWireAngles = None, DriftChamberGas = None, DriftModuleThickness = None,
+                # module wire
+                FieldWireRadius = None, SignalWireRadius = None, WireMaterial = None, WireAngle = None, WireWireDistance = None,
+                **kwds):
+
+            # sand inner volume info
+            self.configuration              =  configuration
+            self.tracker_configuration      = tracker_configuration
+            self.nBarrelModules             = nBarrelModules
+            self.rotAngle                   = 0.5 * Q('360deg') / self.nBarrelModules
+            self.halfDimension, self.Material = ( halfDimension, Material )
+            self.kloeVesselRadius           = self.halfDimension['rmax'] #= Q('2m')
+            self.kloeVesselHalfDx           = self.halfDimension['dz'] #= Q('1.69m')
+            self.GRAINThickness             = GRAINThickness
+            self.clearenceECALGRAIN         = clearenceECALGRAIN
+            self.clearenceGRAINTracker      = clearenceGRAINTracker
+            self.clearenceTrackerECAL       = clearenceTrackerECAL
+            self.clearenceSupermods         = clearenceSupermods
+
+            # tracker
+            self.nofUpstreamTrkMod          = nofUpstreamTrkMod
+            self.nofDownstreamTrkMod        = nofDownstreamTrkMod
+            self.nofC3H6ModAfterCMod        = nofC3H6ModAfterCMod
+
+            # tracker module
+            self.frameThickness             = frameThickness
+            self.frameMaterial              = frameMaterial
+            self.targetThickness            = targetThickness
+            self.MylarThickness             = MylarThickness
+            self.NofDriftModules            = NofDriftModules
+            self.DriftModulesWireAngles     = DriftModulesWireAngles
+            self.DriftChamberGas            = DriftChamberGas
+            self.DriftModuleThickness       = DriftModuleThickness
+
+            # module wire
+            self.FieldWireRadius            = FieldWireRadius
+            self.SignalWireRadius           = SignalWireRadius
+            self.WireMaterial               = WireMaterial
+            self.WireAngle                  = WireAngle
+            self.WireWireDistance           = WireWireDistance
+
+    def init(self):
+
+            self.GetModThickness            = lambda mod_type : self.targetThickness[mod_type] + self.NofDriftModules * self.DriftModuleThickness + (self.NofDriftModules + 1) * self.MylarThickness
+
+            self.ModThickness               = {"CMod" : self.GetModThickness("CMod"), "C3H6Mod" : self.GetModThickness("C3H6Mod"), "TrkMod" : self.GetModThickness("TrkMod")}
+
+            self.SuperModThickness          = self.ModThickness["CMod"] + self.ModThickness["C3H6Mod"] * self.nofC3H6ModAfterCMod + self.clearenceSupermods 
+
+            # upstream
+
+            self.UpstreamSpace4Tracker      = self.kloeVesselRadius - self.GRAINThickness - self.clearenceECALGRAIN - self.clearenceGRAINTracker
+
+            self.UpstreamSpace4SuperMod     = self.UpstreamSpace4Tracker - self.nofUpstreamTrkMod * self.ModThickness["TrkMod"] 
+
+            self.nofUpstreamSuperMod        = int( (self.UpstreamSpace4SuperMod / self.SuperModThickness).to_base_units().magnitude )
+
+            self.UpstreamSpaceLeft          = self.UpstreamSpace4Tracker - self.SuperModThickness * self.nofUpstreamSuperMod - self.ModThickness["TrkMod"] * self.nofUpstreamTrkMod
+
+            self.clearenceGRAINTracker     += self.UpstreamSpaceLeft
+
+            # downstream
+
+            self.DownstreamSpace4Tracker    = self.kloeVesselRadius - self.clearenceTrackerECAL
+
+            self.DownstreamSpace4ExtraMods  = self.DownstreamSpace4Tracker - self.SuperModThickness * self.nofUpstreamSuperMod - self.ModThickness["TrkMod"] * self.nofDownstreamTrkMod 
+
+            self.nofExtraMods               = 2
+
+            self.ExtraModThickness          = self.DownstreamSpace4ExtraMods / self.nofExtraMods    
+            
+            # 
+            
+            self.TrackerThickness           = self.SuperModThickness * self.nofUpstreamSuperMod * 2 + self.ExtraModThickness * self.nofExtraMods + (self.nofUpstreamTrkMod + self.nofDownstreamTrkMod) * self.ModThickness["TrkMod"]
+
+            self.PrintRecap()
+
+    def PrintRecap(self):   
+
+            print("")
+            print("*"*20 + f" INNERVOLUME CONFIGURATION {self.configuration}" +" "+"*"*20)
+            print("*"*20 + f" TRACKER CONFIGURATION {self.tracker_configuration}" +" "+"*"*20)
+            print("")
+            print("_"*20+" INNERVOLUME INFO "+"-"*20)
+            print("")
+            print("GRAINThickness                 | "+str(self.GRAINThickness))
+            print("clearance GRAIN-ECAL           | "+str(self.clearenceECALGRAIN))
+            print("clearance GRAIN-tracker        | "+str(self.clearenceGRAINTracker))
+            print("clearance tracker-ECAL         | "+str(self.clearenceTrackerECAL))
+            print("")
+            print("_"*20+" MODULE INFO "+"_"*20)
+            print("")
+            print("trkMod       Thickness         | "+str(self.ModThickness["TrkMod"]))
+            print("C3H6Mod      Thickness         | "+str(self.ModThickness["C3H6Mod"]))
+            print("CMod         Thickness         | "+str(self.ModThickness["CMod"]))
+            print("SuperMod     Thickness         | "+str(self.SuperModThickness))
+            print("ExtramMod    Thickness         | "+str(self.ExtraModThickness))
+            print("Tracker      Thickness         | "+str(self.TrackerThickness))
+            print("")
+            print("")
+            print(f"nof upstream tracking modules  | {self.nofUpstreamTrkMod}")
+            print(f"nof dwstream tracking modules  | {self.nofDownstreamTrkMod}")
+            print(f"nof supermodules               | {self.nofUpstreamSuperMod * 2}")
+            print("nof downstram extramods        | 2")
+
+    
+    def construct(self, geom):
+
+        self.init()
+
+        main_lv = self.build_tracker(geom)
+    
+        self.add_volume( main_lv )
+
+    def build_tracker(self, geom):
+
+        whole_shape         = geom.shapes.PolyhedraRegular("whole_shape_for_tracker", numsides = self.nBarrelModules, rmin = Q('0cm'), rmax = self.kloeVesselRadius , dz = self.kloeVesselHalfDx, sphi = self.rotAngle)
+        
+        upstream_shape      = geom.shapes.Box("upstream_shape_for_tracker", dx = 0.5 * self.GRAINThickness + self.clearenceECALGRAIN + self.clearenceGRAINTracker, dy = self.kloeVesselRadius, dz = self.kloeVesselHalfDx )
+        
+        upstream_shape_pos  = geom.structure.Position("upstream_shape_pos_for_tracker", - self.kloeVesselRadius + 0.5 * self.GRAINThickness + self.clearenceECALGRAIN, Q('0m'), Q('0m'))
+        
+        tracker_shape       = geom.shapes.Boolean("tracker_shape", type='subtraction', first = whole_shape, second = upstream_shape, rot='noRotate', pos=upstream_shape_pos)
+        
+        main_lv             = geom.structure.Volume('SANDtracker',   material=self.Material, shape=tracker_shape)
+        
+        print(( "main_lv = "+ main_lv.name))
+        
+        self.FillTracker(geom, main_lv)
+        
+        return main_lv
+    
+    def FillTracker(self, geom, volume):
+    
+        self.FillSymSuperMod(geom, volume)
+        
+        self.FillTrackingMod(geom, volume)
+    
+    def FillSymSuperMod(self, geom, volume):
+        
+        running_x = 0
+    
+        for i in self.nofUpstreamSuperMod:
+        
+            running_x -= self.SuperModThickness/2
+            
+            SuperMod_lv = self.constructSuperMod(geom, running_x)
+            
+            self.PlaceSubVolume(geom, volume, SuperMod_lv, pos_x = running_x, label = "_"+str(i))
+            
+            self.PlaceSubVolume(geom, volume, SuperMod_lv, pos_x = -running_x, label = "_"+str(i))
+    
+    def constructSuperMod(self, geom, running_x):
+        # build SuperMod main shape
+        
+        half_thickness, half_heigth, half_length = self.SuperModThickness/2, self.getHalfHeight(abs(running_x)), self.kloeVesselHalfDx
+        
+        SuperMod_index = int(running_x/self.SuperModThickness)
+        
+        SuperMod_name  = "SuperMod"+str(SuperMod_index)
+        
+        SuperMod_lv    = self.constructBox(geom, SuperMod_name, half_thickness, half_heigth, half_length)
+        
+        # build SuperMod subvolumes : CMod, C3H6Mod, Frame
+
+        frame_lv       = self.constructFrame(geom, SuperMod_name, half_heigth)
+        
+        CMod_lv        = self.constructMod(geom, "C", half_heigth - self.frameThickness)
+        
+        C3H6Mod_lv     = self.constructMod(geom, "C3H6", half_heigth - self.frameThickness)
+        
+        # place subvolumes in SuperMod
+
+        self.PlaceSubVolume(geom, SuperMod_lv, frame_lv)
+        
+        self.PlaceSubVolume(geom, SuperMod_lv, CMod_lv, pos_x = - self.SuperModThickness/2 + self.ModThickness["CMod"]/2)
+        
+        for i in self.nofC3H6ModAfterCMod:
+        
+            pos_x =  - self.SuperModThickness/2 + self.ModThickness["CMod"] + self.ModThickness["C3H6Mod"] * (0.5 + i)
+        
+            self.PlaceSubVolume(geom, SuperMod_lv, C3H6Mod_lv, pos_x = pos_x)
+        
+        return SuperMod_lv
+    
+    def constructFrame(self, geom, half_heigth):
+        
+        outer_box  = geom.shapes.Box("frame_out_shape", dx = self.SuperModThickness/2, dy = half_heigth, dz = self.kloeVesselHalfDx)
+        
+        inner_box  = geom.shapes.Box("frame_in_shape", dx = self.SuperModThickness/2, dy = half_heigth - self.frameThickness, dz = self.kloeVesselHalfDx - self.frameThickness)
+        
+        shape = geom.shapes.Boolean("frame_shape", type = "subtraction", first = outer_box, second = inner_box, rot='noRotate')
+        
+        frame_lv = geom.structure.Volume("frame", material = self.frameMaterial, shape = shape) 
+        
+        return frame_lv
+ 
+    def constructMod(self, geom, target_type, half_heigth):
+        
+        half_thickness, half_length = self.ModThickness[target_type+"Mod"]/2, self.kloeVesselHalfDx - self.frameThickness
+
+        drift_chamber_thickness = self.NofDriftModules * self.DriftModuleThickness + (self.NofDriftModules + 1) * self.MylarThickness
+
+        mod_lv = self.constructBox(geom, target_type+"Mod",half_thickness, half_heigth, half_length)
+
+        target_lv = self.constructBox(geom, target_type+"target", self.targetThickness[target_type+"Mod"]/2, half_heigth, half_length)
+
+
+        DriftChamber_lv = self.constructBox(geom, "drift_chamber", drift_chamber_thickness/2, half_heigth, half_length)
+
+        self.FillDriftChamber()
+
+        self.PlaceSubVolume(geom, mod_lv, target_lv, pos_x = - half_thickness + self.ModThickness[target_type+"Mod"]/2)
+
+        self.PlaceSubVolume()
+    
+        return mod_lv
+    
+    def constructBox(self, geom, name, half_thickness, half_heigth, half_length, material="Air35C"):
+        
+        box_shape = geom.shapes.Box(name+"_shape", dx = half_thickness, dy = half_heigth, dz = half_length)
+        box       = geom.structure.Volume(name, material = material, shape = box_shape)
+        return box
+        
+
+    def PlaceSubVolume(self, geom, volume, subvolume, pos_x=Q("0mm"), pos_y=Q("0mm"), pos_z=Q("0mm"), rot_x=Q("0deg"), rot_y=Q("0deg"), rot_z=Q("0deg"), label=""):
+
+        name = subvolume.name + label
+        position = geom.structure.Position(name + "_pos", pos_x, pos_y, pos_z)
+        rotation = geom.structure.Rotation(name + "_rot", rot_x, rot_y, rot_z)
+        place    = geom.structure.Placement(name + "_place", volume = subvolume.name, pos = position.name, rot = rotation.name)
+        
+        volume.placements.append(place.name)
+
+    
+    def getHalfHeight(self,dis2c):
+
+        theta   = math.pi*2/self.nBarrelModules
+        d       = self.kloeVesselRadius*math.tan(theta/2)
+        if dis2c<d:
+            return self.kloeVesselRadius
+        projectedDis=d
+        HalfHeight=self.kloeVesselRadius
+
+        for i in range(1,int(nside/4)):
+            projectedDisPre=projectedDis
+            projectedDis+=2*d*math.cos(i*theta)
+            if dis2c<projectedDis:
+                return HalfHeight-(dis2c-projectedDisPre)*math.tan(i*theta)
+            else:
+                HalfHeight-=2*d*math.sin(i*theta)    
+    
+    
+
+

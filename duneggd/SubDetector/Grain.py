@@ -34,7 +34,7 @@ class GrainBuilder(gegede.builder.Builder):
             self.InterVesselHalfGap  = Q('30mm')
 
 
-        elif self.configuration == "option_2":
+        elif self.configuration == "option_2" or self.configuration == "drift_option":
 
             #########################################  EXTERNAL VESSEL (endcap steel 12 mm)
             #              Carbon_fiber 6 mm                                     
@@ -85,6 +85,8 @@ class GrainBuilder(gegede.builder.Builder):
         if self.configuration == "option_1":
             main_lv = self.construct_GRAIN_option1(geom)
         elif self.configuration == "option_2":
+            main_lv = self.construct_GRAIN_option2(geom)
+        else : 
             main_lv = self.construct_GRAIN_option2(geom)
 
         #main_lv = self.construct_GRAIN(geom)

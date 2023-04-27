@@ -43,6 +43,8 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         materials.define_materials(geom)
         main_lv = self.constructModule(geom)
         self.add_volume(main_lv)
+        # print(type(main_lv))
+        # print("volume added")
     
     def constructModule(self,geom):
 
@@ -62,14 +64,6 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         
         self.PlaceSubVolume(geom, main_lv, drift_chamber_lv, pos_x = -self.moduleThickness/2 + self.targetThickness + self.DriftChamberThickness/2)
         
-        # print(" ")
-        # print("target_lv type : ",type(target_lv))
-        # print(target_lv.shape)
-        # print(geom.store.shapes.get(target_lv.shape))
-        # print(geom.get_shape('target_shape')[1])
-        # print(geom.store.shapes.get('target_shape')[1])
-        # print(" ")
-
         return main_lv
 
     def FillDriftChamber(self,geom, drift_volume):
