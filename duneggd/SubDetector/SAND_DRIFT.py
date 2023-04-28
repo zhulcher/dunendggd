@@ -160,15 +160,19 @@ class DRIFTBuilder(gegede.builder.Builder):
             running_x -= self.SuperModThickness/2
             
             SuperMod_lv = self.constructSuperMod(geom, running_x, label = str(i))
-            
-            self.PlaceSubVolume(geom, volume, SuperMod_lv, pos_x = running_x, label = str(i)+"up")
-            
-            self.PlaceSubVolume(geom, volume, SuperMod_lv, pos_x = -running_x, label = str(i)+"dw")
 
             print("")
             print(f"SuperMod {i} built")
             print("")
+            
+            self.PlaceSubVolume(geom, volume, SuperMod_lv, pos_x = running_x, label = str(i)+"up")
+
+            print(f"placing SuperMod {i} up")
+            
+            self.PlaceSubVolume(geom, volume, SuperMod_lv, pos_x = -running_x, label = str(i)+"dw")
     
+            print(f"placing SuperMod {i} dw")
+
     def constructSuperMod(self, geom, running_x, label = ""):
         # build SuperMod main shape
         
