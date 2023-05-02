@@ -26,7 +26,7 @@ class TopBuilder(gegede.builder.Builder):
         innercon_lv = sbs[1].get_volume()
         ft100_lv    = sbs[2].get_volume()
         ft160_lv    = sbs[3].get_volume()
-        modcont_lv  = sbs[4].get_volume()
+        #modcont_lv  = sbs[4].get_volume()
 
         # place long connectors
         midZ = -1*main_shape.dz + self.shifts[2]
@@ -79,22 +79,22 @@ class TopBuilder(gegede.builder.Builder):
             main_lv.placements.append(ft160_pla.name)         
 
         # place the module top containers
-        modcontpos = self.positions[2]
+        #modcontpos = self.positions[2]
 
-        relpos1 = geom.structure.Position(self.name+'ModuleTopContainer1_pos', modcontpos[0], modcontpos[1], modcontpos[2])  
-        modcont1_pla = geom.structure.Placement(self.name+modcont_lv.name+'1_pla', volume=modcont_lv, pos=relpos1)
-        main_lv.placements.append(modcont1_pla.name)  
+        #relpos1 = geom.structure.Position(self.name+'ModuleTopContainer1_pos', modcontpos[0], modcontpos[1], modcontpos[2])  
+        #modcont1_pla = geom.structure.Placement(self.name+modcont_lv.name+'1_pla', volume=modcont_lv, pos=relpos1)
+        #main_lv.placements.append(modcont1_pla.name)  
 
-        relpos2 = geom.structure.Position(self.name+'ModuleTopContainer2_pos', -1*modcontpos[0], modcontpos[1], modcontpos[2])  
-        modcont2_pla = geom.structure.Placement(self.name+modcont_lv.name+'2_pla', volume=modcont_lv, pos=relpos2)
-        main_lv.placements.append(modcont2_pla.name)  
+        #relpos2 = geom.structure.Position(self.name+'ModuleTopContainer2_pos', -1*modcontpos[0], modcontpos[1], modcontpos[2])  
+        #modcont2_pla = geom.structure.Placement(self.name+modcont_lv.name+'2_pla', volume=modcont_lv, pos=relpos2)
+        #main_lv.placements.append(modcont2_pla.name)  
 
-        relpos3 = geom.structure.Position(self.name+'ModuleTopContainer3_pos', -1*modcontpos[0], -1*modcontpos[1], modcontpos[2])  
-        modcont3_pla = geom.structure.Placement(self.name+modcont_lv.name+'3_pla', volume=modcont_lv, pos=relpos3)
-        main_lv.placements.append(modcont3_pla.name)  
+        #relpos3 = geom.structure.Position(self.name+'ModuleTopContainer3_pos', -1*modcontpos[0], -1*modcontpos[1], modcontpos[2])  
+        #modcont3_pla = geom.structure.Placement(self.name+modcont_lv.name+'3_pla', volume=modcont_lv, pos=relpos3)
+        #main_lv.placements.append(modcont3_pla.name)  
 
-        relpos4 = geom.structure.Position(self.name+'ModuleTopContainer4_pos', modcontpos[0], -1*modcontpos[1], modcontpos[2])  
-        modcont4_pla = geom.structure.Placement(self.name+modcont_lv.name+'4_pla', volume=modcont_lv, pos=relpos4)
-        main_lv.placements.append(modcont4_pla.name)  
+        #relpos4 = geom.structure.Position(self.name+'ModuleTopContainer4_pos', modcontpos[0], -1*modcontpos[1], modcontpos[2])  
+        #modcont4_pla = geom.structure.Placement(self.name+modcont_lv.name+'4_pla', volume=modcont_lv, pos=relpos4)
+        #main_lv.placements.append(modcont4_pla.name)  
 
        
