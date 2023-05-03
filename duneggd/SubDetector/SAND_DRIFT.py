@@ -46,6 +46,7 @@ class DRIFTBuilder(gegede.builder.Builder):
             self.DriftModulesWireAngles     = DriftModulesWireAngles
             self.DriftChamberGas            = DriftChamberGas
             self.DriftModuleThickness       = DriftModuleThickness
+            self.DriftChamberThickness      = self.NofDriftModules * self.DriftModuleThickness + (self.NofDriftModules + 1) * self.MylarThickness
 
             # module wire
             self.FieldWireRadius            = FieldWireRadius
@@ -80,11 +81,11 @@ class DRIFTBuilder(gegede.builder.Builder):
 
             self.DownstreamSpace4ExtraMods  = self.DownstreamSpace4Tracker - self.SuperModThickness * self.nofUpstreamSuperMod - self.ModThickness["TrkMod"] * self.nofDownstreamTrkMod 
 
-            self.nofExtraMods               = 1
+            self.nofExtraMods               = 2
 
             self.ExtraModThickness          = self.DownstreamSpace4ExtraMods / self.nofExtraMods    
 
-            self.nofC3H6ModInExtraMod       = int(((self.ExtraModThickness - self.clearenceSupermods - self.ModThickness["CMod"])/self.ModThickness["C3H6Mod"]).magnitude)
+            self.nofC3H6ModInExtraMod       = int(((self.ExtraModThickness - self.clearenceSupermods - self.ModThickness["CMod"])/self.ModThickness["C3H6Mod"]).to_base_units().magnitude)
             
             # 
             
@@ -100,10 +101,14 @@ class DRIFTBuilder(gegede.builder.Builder):
             print("")
             print("_"*20+" INNERVOLUME INFO "+"_"*20)
             print("")
+            print("SAND radius                    | "+str(self.kloeVesselRadius))
+            print("SAND half Dx                   | "+str(self.kloeVesselHalfDx))
             print("GRAINThickness                 | "+str(self.GRAINThickness))
             print("clearance GRAIN-ECAL           | "+str(self.clearenceECALGRAIN))
             print("clearance GRAIN-tracker        | "+str(self.clearenceGRAINTracker))
             print("clearance tracker-ECAL         | "+str(self.clearenceTrackerECAL))
+            print("clearance SuperMods            | "+str(self.clearenceSupermods))
+            print("Upstream Space 4 Tracker       | "+str(self.UpstreamSpace4Tracker))
             print("")
             print("_"*20+" MODULE INFO "+"_"*20)
             print("")
@@ -154,21 +159,45 @@ class DRIFTBuilder(gegede.builder.Builder):
     
         self.costructSymSuperMod(geom, volume)
         
-        # self.constructExtraMod(geom, volume)
+        self.constructExtraMod(geom, volume)
 
-        # self.constructTrackingMod(geom, volume)
+        self.constructTrackingMod(geom, volume)
     
-    # def constructExtraMod(self, geom, volume):
+    def constructTrackingMod(self, geom, volume):
          
-    #      running_x = self.SuperModThickness * self.nofUpstreamSuperMod + self.ExtraModThickness
+        # construct upstream part
+        running_x = - self.SuperModThickness * self.nofUpstreamSuperMod - self.ModThickness["TrkMod"]
+
+        for i in range(self.nofUpstreamTrkMod):
+             
+            tracking_lv = self.constructBox(geom, "TrkMod_up"+str(i), half_thickness = self.ModThickness["TrkMod"]/2, half_heigth = self.getHalfHeight(abs(running_x)), half_length = self.kloeVesselHalfDx)
+
+            self.placeSubVolume(geom, volume, tracking_lv, pos_x = running_x + self.ModThickness["TrkMod"]/2, label = str(i))
+
+            running_x -= self.ModThickness["TrkMod"]
+        # construct dwstream part
+
+        running_x = self.SuperModThickness * self.nofUpstreamSuperMod + self.ExtraModThickness * self.nofExtraMods +  self.ModThickness["TrkMod"]
+
+        for i in range(self.nofDownstreamTrkMod):
+    
+            tracking_lv = self.constructBox(geom, "TrkMod_dw"+str(i), half_thickness = self.ModThickness["TrkMod"]/2, half_heigth = self.getHalfHeight(abs(running_x)), half_length = self.kloeVesselHalfDx)
+
+            self.placeSubVolume(geom, volume, tracking_lv, pos_x = running_x - self.ModThickness["TrkMod"]/2, label = str(i))
+    
+            running_x += self.ModThickness["TrkMod"]
+
+    def constructExtraMod(self, geom, volume):
          
-    #      for i in range(self.nofExtraMods):
+        running_x = self.SuperModThickness * self.nofUpstreamSuperMod + self.ExtraModThickness
+         
+        for i in range(self.nofExtraMods):
               
-    #           extraMod_lv = self.constructXMod(geom, running_x, label = str(i))
+            extraMod_lv = self.constructSuperMod(geom, running_x, half_thickness = self.ExtraModThickness/2, nofC3H6 = self.nofC3H6ModInExtraMod, label = "X"+str(i))
 
-    #           self.placeSubVolume(volume, extraMod_lv, pos_x=running_x +  self.ExtraModThickness/2, label = str(i))
+            self.placeSubVolume(geom, volume, extraMod_lv, pos_x = running_x - self.ExtraModThickness/2, label = str(i))
 
-    #           running_x += self.ExtraModThickness
+            running_x += self.ExtraModThickness
 
     
     def costructSymSuperMod(self, geom, volume):
@@ -197,45 +226,45 @@ class DRIFTBuilder(gegede.builder.Builder):
         # build SuperMod main shape
 
         if half_thickness == None : half_thickness = self.SuperModThickness/2
-        if half_length    == None : half_length    = self.kloeVesselHalfDx/2
-        if nofC3H6        == None : half_length    = self.nofC3H6ModAfterCMod/2
+        if half_length    == None : half_length    = self.kloeVesselHalfDx
+        if nofC3H6        == None : nofC3H6        = self.nofC3H6ModAfterCMod
         
         half_heigth    = self.getHalfHeight(abs(running_x))
-        
+
         SuperMod_name  = name + label
         
         SuperMod_lv    = self.constructBox(geom, SuperMod_name, half_thickness, half_heigth, half_length)
     
         # build SuperMod subvolumes : CMod, C3H6Mod, Frame
 
-        frame_lv       = self.constructFrame(geom, half_heigth, label = SuperMod_name)
+        frame_lv       = self.constructFrame(geom, half_thickness, half_heigth, half_length, label = label)
         
-        CMod_lv        = self.constructMod(geom, "C", half_heigth - self.frameThickness, label = SuperMod_name)
+        CMod_lv        = self.constructMod(geom, "C", half_heigth - self.frameThickness, label = label)
         
-        C3H6Mod_lv     = self.constructMod(geom, "C3H6", half_heigth - self.frameThickness, label = SuperMod_name)
+        C3H6Mod_lv     = self.constructMod(geom, "C3H6", half_heigth - self.frameThickness, label = label)
         
         # place subvolumes in SuperMod
 
         self.placeSubVolume(geom, SuperMod_lv, frame_lv)
         
-        self.placeSubVolume(geom, SuperMod_lv, CMod_lv, pos_x = - half_thickness/2 + self.ModThickness["CMod"]/2)
+        self.placeSubVolume(geom, SuperMod_lv, CMod_lv, pos_x = - half_thickness + self.ModThickness["CMod"]/2)
         
         for i in range(nofC3H6):
         
-            pos_x =  - half_thickness/2 + self.ModThickness["CMod"] + self.ModThickness["C3H6Mod"] * (0.5 + i)
+            pos_x =  - half_thickness + self.ModThickness["CMod"] + self.ModThickness["C3H6Mod"] * (0.5 + i)
         
             self.placeSubVolume(geom, SuperMod_lv, C3H6Mod_lv, pos_x = pos_x, label=str(i))
         
         return SuperMod_lv
     
     
-    def constructFrame(self, geom, half_heigth, label = ""):
+    def constructFrame(self, geom, half_thickness, half_heigth, half_length, label = ""):
 
         name = "frame"+label
         
-        outer_box  = geom.shapes.Box(name+"_out_shape", dx = self.SuperModThickness/2, dy = half_heigth, dz = self.kloeVesselHalfDx)
+        outer_box  = geom.shapes.Box(name+"_out_shape", dx = half_thickness, dy = half_heigth, dz = half_length)
         
-        inner_box  = geom.shapes.Box(name+"_in_shape", dx = self.SuperModThickness/2, dy = half_heigth - self.frameThickness, dz = self.kloeVesselHalfDx - self.frameThickness)
+        inner_box  = geom.shapes.Box(name+"_in_shape", dx = half_thickness, dy = half_heigth - self.frameThickness, dz = half_length - self.frameThickness)
         
         shape      = geom.shapes.Boolean(name+"_shape", type = "subtraction", first = outer_box, second = inner_box, rot='noRotate')
         
@@ -247,21 +276,19 @@ class DRIFTBuilder(gegede.builder.Builder):
         
         half_thickness, half_length = self.ModThickness[target_type+"Mod"]/2, self.kloeVesselHalfDx - self.frameThickness
 
-        drift_chamber_thickness     = self.NofDriftModules * self.DriftModuleThickness + (self.NofDriftModules + 1) * self.MylarThickness
-
         name = target_type+label
 
         mod_lv                      = self.constructBox(geom, name+"Mod", half_thickness, half_heigth, half_length)
 
         target_lv                   = self.constructBox(geom, name+"target", self.targetThickness[target_type+"Mod"]/2, half_heigth, half_length)
 
-        DriftChamber_lv             = self.constructBox(geom, name+"drift_chamber", drift_chamber_thickness/2, half_heigth, half_length)
+        DriftChamber_lv             = self.constructBox(geom, name+"drift_chamber", self.DriftChamberThickness/2, half_heigth, half_length)
 
         # self.fillDriftChamber()
 
         self.placeSubVolume(geom, mod_lv, target_lv, pos_x = - half_thickness + self.targetThickness[target_type+"Mod"]/2)
 
-        self.placeSubVolume(geom, mod_lv, DriftChamber_lv, pos_x = - half_thickness + self.targetThickness[target_type+"Mod"] + drift_chamber_thickness/2)
+        self.placeSubVolume(geom, mod_lv, DriftChamber_lv, pos_x = - half_thickness + self.targetThickness[target_type+"Mod"] + self.DriftChamberThickness/2)
     
         return mod_lv
 
@@ -289,12 +316,12 @@ class DRIFTBuilder(gegede.builder.Builder):
         d       = self.kloeVesselRadius*math.tan(theta/2)
         if dis2c<d:
             return self.kloeVesselRadius
-        projectedDis=d
-        HalfHeight=self.kloeVesselRadius
+        projectedDis = d
+        HalfHeight   = self.kloeVesselRadius
 
         for i in range(1,int(self.nBarrelModules/4)):
-            projectedDisPre=projectedDis
-            projectedDis+=2*d*math.cos(i*theta)
+            projectedDisPre = projectedDis
+            projectedDis   += 2 * d * math.cos(i * theta)
             if dis2c<projectedDis:
                 return HalfHeight-(dis2c-projectedDisPre)*math.tan(i*theta)
             else:
