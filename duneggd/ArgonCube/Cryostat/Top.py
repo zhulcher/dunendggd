@@ -97,4 +97,31 @@ class TopBuilder(gegede.builder.Builder):
         #modcont4_pla = geom.structure.Placement(self.name+modcont_lv.name+'4_pla', volume=modcont_lv, pos=relpos4)
         #main_lv.placements.append(modcont4_pla.name)  
 
-       
+        #This file is already hardcoded to do 2x2 modules, so I'll keep doing the same... 
+        modcontpos = self.positions[2]
+        self.Module_builder = sbs[4]
+        self.N_ModuleX = 2
+        self.N_ModuleZ = 2
+        for i in range(self.N_ModuleX):
+            for j in range(self.N_ModuleZ):
+                #pos = [-self.halfDimension['dx']+(2*i+1)*self.Module_builder.halfDimension['dx'],Q('0cm'),-self.halfDimension['dz']+(2*j+1)*self.Module_builder.halfDimension['dz']]
+
+                pos = [0.,0.,modcontpos[2]]
+                pos[0] = [-modcontpos[0], modcontpos[0]][i]
+                pos[1] = [-modcontpos[1], modcontpos[1]][j]
+
+                Module_lv = self.Module_builder.get_volume()
+
+                Module_pos = geom.structure.Position(self.Module_builder.name+'_pos_'+str(i)+'.'+str(j),
+                                                        pos[0],pos[1],pos[2])
+
+                Module_rot = geom.structure.Rotation(self.name+Module_lv.name+'_rot'+str(i)+'.'+str(j), '-90.0deg', '0.0deg', '0.0deg')
+
+                Module_pla = geom.structure.Placement(self.Module_builder.name+'_pla_'+str(i)+'.'+str(j),
+                                                        volume=Module_lv,
+                                                        pos=Module_pos,
+                                                        rot = Module_rot,
+                                                        copynumber=2*j+i)
+
+                main_lv.placements.append(Module_pla.name)
+        
