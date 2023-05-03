@@ -26,7 +26,7 @@ class TopBuilder(gegede.builder.Builder):
         innercon_lv = sbs[1].get_volume()
         ft100_lv    = sbs[2].get_volume()
         ft160_lv    = sbs[3].get_volume()
-        modcont_lv  = sbs[4].get_volume()
+        #modcont_lv  = sbs[4].get_volume()
 
         # place long connectors
         midZ = -1*main_shape.dz + self.shifts[2]
@@ -79,22 +79,49 @@ class TopBuilder(gegede.builder.Builder):
             main_lv.placements.append(ft160_pla.name)         
 
         # place the module top containers
+        #modcontpos = self.positions[2]
+
+        #relpos1 = geom.structure.Position(self.name+'ModuleTopContainer1_pos', modcontpos[0], modcontpos[1], modcontpos[2])  
+        #modcont1_pla = geom.structure.Placement(self.name+modcont_lv.name+'1_pla', volume=modcont_lv, pos=relpos1)
+        #main_lv.placements.append(modcont1_pla.name)  
+
+        #relpos2 = geom.structure.Position(self.name+'ModuleTopContainer2_pos', -1*modcontpos[0], modcontpos[1], modcontpos[2])  
+        #modcont2_pla = geom.structure.Placement(self.name+modcont_lv.name+'2_pla', volume=modcont_lv, pos=relpos2)
+        #main_lv.placements.append(modcont2_pla.name)  
+
+        #relpos3 = geom.structure.Position(self.name+'ModuleTopContainer3_pos', -1*modcontpos[0], -1*modcontpos[1], modcontpos[2])  
+        #modcont3_pla = geom.structure.Placement(self.name+modcont_lv.name+'3_pla', volume=modcont_lv, pos=relpos3)
+        #main_lv.placements.append(modcont3_pla.name)  
+
+        #relpos4 = geom.structure.Position(self.name+'ModuleTopContainer4_pos', modcontpos[0], -1*modcontpos[1], modcontpos[2])  
+        #modcont4_pla = geom.structure.Placement(self.name+modcont_lv.name+'4_pla', volume=modcont_lv, pos=relpos4)
+        #main_lv.placements.append(modcont4_pla.name)  
+
+        #This file is already hardcoded to do 2x2 modules, so I'll keep doing the same... 
         modcontpos = self.positions[2]
+        self.Module_builder = sbs[4]
+        self.N_ModuleX = 2
+        self.N_ModuleZ = 2
+        for i in range(self.N_ModuleX):
+            for j in range(self.N_ModuleZ):
+                #pos = [-self.halfDimension['dx']+(2*i+1)*self.Module_builder.halfDimension['dx'],Q('0cm'),-self.halfDimension['dz']+(2*j+1)*self.Module_builder.halfDimension['dz']]
 
-        relpos1 = geom.structure.Position(self.name+'ModuleTopContainer1_pos', modcontpos[0], modcontpos[1], modcontpos[2])  
-        modcont1_pla = geom.structure.Placement(self.name+modcont_lv.name+'1_pla', volume=modcont_lv, pos=relpos1)
-        main_lv.placements.append(modcont1_pla.name)  
+                pos = [0.,0.,modcontpos[2]]
+                pos[0] = [-modcontpos[0], modcontpos[0]][i]
+                pos[1] = [-modcontpos[1], modcontpos[1]][j]
 
-        relpos2 = geom.structure.Position(self.name+'ModuleTopContainer2_pos', -1*modcontpos[0], modcontpos[1], modcontpos[2])  
-        modcont2_pla = geom.structure.Placement(self.name+modcont_lv.name+'2_pla', volume=modcont_lv, pos=relpos2)
-        main_lv.placements.append(modcont2_pla.name)  
+                Module_lv = self.Module_builder.get_volume()
 
-        relpos3 = geom.structure.Position(self.name+'ModuleTopContainer3_pos', -1*modcontpos[0], -1*modcontpos[1], modcontpos[2])  
-        modcont3_pla = geom.structure.Placement(self.name+modcont_lv.name+'3_pla', volume=modcont_lv, pos=relpos3)
-        main_lv.placements.append(modcont3_pla.name)  
+                Module_pos = geom.structure.Position(self.Module_builder.name+'_pos_'+str(i)+'.'+str(j),
+                                                        pos[0],pos[1],pos[2])
 
-        relpos4 = geom.structure.Position(self.name+'ModuleTopContainer4_pos', modcontpos[0], -1*modcontpos[1], modcontpos[2])  
-        modcont4_pla = geom.structure.Placement(self.name+modcont_lv.name+'4_pla', volume=modcont_lv, pos=relpos4)
-        main_lv.placements.append(modcont4_pla.name)  
+                Module_rot = geom.structure.Rotation(self.name+Module_lv.name+'_rot'+str(i)+'.'+str(j), '-90.0deg', '0.0deg', '0.0deg')
 
-       
+                Module_pla = geom.structure.Placement(self.Module_builder.name+'_pla_'+str(i)+'.'+str(j),
+                                                        volume=Module_lv,
+                                                        pos=Module_pos,
+                                                        rot = Module_rot,
+                                                        copynumber=2*j+i)
+
+                main_lv.placements.append(Module_pla.name)
+        

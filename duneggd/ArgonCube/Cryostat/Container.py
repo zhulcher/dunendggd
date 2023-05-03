@@ -35,7 +35,9 @@ class ContainerBuilder(gegede.builder.Builder):
         nComp = len(sbs) - len(sbs_aux)
         sbs = sbs[:nComp]
         # place the first components
-        for sb, pos in zip(sbs, self.positions):
+        for i, (sb, pos) in enumerate(zip(sbs, self.positions)):
+            if i not in [0,1,3]:
+                continue
             sb_lv = sb.get_volume()
             sb_pos = geom.structure.Position(self.name+sb_lv.name+'_pos',
                                              pos[0], pos[1], pos[2])     

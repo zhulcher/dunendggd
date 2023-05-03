@@ -20,8 +20,8 @@ class BodyBuilder(gegede.builder.Builder):
     def construct( self, geom ):
         # construct the tub and end cap
         outertub_shape = geom.shapes.Tubs( self.name+'OuterTub', rmin=self.tubrmin, rmax=self.tubrmax, dz=self.tubdz )
-        torus_shape = geom.shapes.Tubs( self.name+'Torus', rmin=self.caprmin, rmax=self.caprmax, dz=self.caprtor,
-                                        sphi=self.startphi, dphi=self.deltaphi )                                        
+        torus_shape = geom.shapes.Torus( self.name+'Torus', rmin=self.caprmin, rmax=self.caprmax, rtor=self.caprtor,
+                                        startphi=self.startphi, deltaphi=self.deltaphi )
         innertub_shape = geom.shapes.Tubs( self.name+'InnerTub', rmin=Q('0m'), rmax=self.caprtor, dz=self.caprmax )
 
         shiftFor2 = Q(-1*outertub_shape.dz)
