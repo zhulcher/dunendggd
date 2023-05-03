@@ -108,8 +108,6 @@ class DriftChamberModuleBuilder(gegede.builder.Builder):
         
         staggered               = (module_number%2)
         
-        wire_angle              = self.DriftModulesWireAngles[module_number]
-
         print(" ")
         print("drift module : "+drift_module.name)
         print("module height : "+str(half_h*2))
