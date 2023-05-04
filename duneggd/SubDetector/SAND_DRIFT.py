@@ -61,7 +61,7 @@ class DRIFTBuilder(gegede.builder.Builder):
 
             self.ModThickness               = {"CMod" : self.GetModThickness("CMod"), "C3H6Mod" : self.GetModThickness("C3H6Mod"), "TrkMod" : self.GetModThickness("TrkMod")}
 
-            self.SuperModThickness          = self.ModThickness["CMod"] + self.ModThickness["C3H6Mod"] * self.nofC3H6ModAfterCMod + self.clearenceSupermods 
+            self.SuperModThickness          = self.ModThickness["CMod"] + self.ModThickness["C3H6Mod"] * self.nofC3H6ModAfterCMod# + self.clearenceSupermods 
 
             # upstream
 
@@ -83,9 +83,9 @@ class DRIFTBuilder(gegede.builder.Builder):
 
             self.nofExtraMods               = 2
 
-            self.ExtraModThickness          = self.DownstreamSpace4ExtraMods / self.nofExtraMods    
+            self.ExtraModThickness          = (self.DownstreamSpace4ExtraMods - self.nofExtraMods * self.clearenceSupermods) / self.nofExtraMods
 
-            self.nofC3H6ModInExtraMod       = int(((self.ExtraModThickness - self.clearenceSupermods - self.ModThickness["CMod"])/self.ModThickness["C3H6Mod"]).to_base_units().magnitude)
+            self.nofC3H6ModInExtraMod       = int(((self.ExtraModThickness - self.ModThickness["CMod"])/self.ModThickness["C3H6Mod"]).to_base_units().magnitude)
             
             # 
             
@@ -171,7 +171,7 @@ class DRIFTBuilder(gegede.builder.Builder):
     def constructTrackingMod(self, geom, volume):
 
         # construct upstream part
-        running_x = - self.SuperModThickness * self.nofUpstreamSuperMod - self.ModThickness["TrkMod"]
+        running_x = - (self.SuperModThickness + self.clearenceSupermods) * self.nofUpstreamSuperMod - self.ModThickness["TrkMod"] - self.clearenceSupermods/2
 
         for i in range(self.nofUpstreamTrkMod):
 
@@ -192,7 +192,7 @@ class DRIFTBuilder(gegede.builder.Builder):
 
         # construct dwstream part
 
-        running_x = self.SuperModThickness * self.nofUpstreamSuperMod + self.ExtraModThickness * self.nofExtraMods +  self.ModThickness["TrkMod"]
+        running_x = (self.SuperModThickness + self.clearenceSupermods) * self.nofUpstreamSuperMod + (self.ExtraModThickness +  self.clearenceSupermods) * self.nofExtraMods +  self.ModThickness["TrkMod"] + self.clearenceSupermods/2
 
         for i in range(self.nofDownstreamTrkMod):
 
@@ -213,7 +213,7 @@ class DRIFTBuilder(gegede.builder.Builder):
 
     def constructExtraMod(self, geom, volume):
          
-        running_x = self.SuperModThickness * self.nofUpstreamSuperMod + self.ExtraModThickness
+        running_x = (self.SuperModThickness + self.clearenceSupermods) * self.nofUpstreamSuperMod + self.ExtraModThickness + self.clearenceSupermods/2
          
         for i in range(self.nofExtraMods):
               
@@ -221,13 +221,13 @@ class DRIFTBuilder(gegede.builder.Builder):
 
             self.placeSubVolume(geom, volume, extraMod_lv, pos_x = running_x - self.ExtraModThickness/2, label = str(i))
 
-            running_x += self.ExtraModThickness
+            running_x += (self.ExtraModThickness + self.clearenceSupermods)
 
             self.WiresCounter["Tracker"] += self.WiresCounter["SuperMod"] 
  
     def costructSymSuperMod(self, geom, volume):
         
-        running_x = - self.SuperModThickness
+        running_x = - self.SuperModThickness - self.clearenceSupermods/2
 
         supermod_label = ["A","B","C","D","F"]
     
@@ -244,7 +244,7 @@ class DRIFTBuilder(gegede.builder.Builder):
     
             print(f"placing SuperMod {supermod_label[i]} dw")
             
-            running_x -= self.SuperModThickness
+            running_x -= (self.SuperModThickness + self.clearenceSupermods)
 
             self.WiresCounter["Tracker"] += self.WiresCounter["SuperMod"] * 2
 
