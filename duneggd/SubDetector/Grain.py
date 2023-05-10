@@ -6,7 +6,7 @@ class GrainBuilder(gegede.builder.Builder):
 
     def configure( self, configuration=None, 
                   ExtVesselThickness = None, ExtVesselHeight = None, ExtVesselLength = None, 
-                  CarbonFiberThickness = None, HoneycombThickness = None, AluminumThickness = None,
+                  CarbonFiberThickness = None, HoneycombThickness = None, SteelThickness = None, EndcapThickness = None,
                   LArThickness = None, LArHeight = None, LArLength = None, 
                   **kwds):
         
@@ -18,15 +18,17 @@ class GrainBuilder(gegede.builder.Builder):
         
         self.CarbonFiberThickness   = CarbonFiberThickness
         self.HoneycombThickness     = HoneycombThickness
-        self.AluminumThickness      = AluminumThickness
+        self.SteelThickness         = SteelThickness
+
+        self.EndcapThickness        = EndcapThickness
         
         self.LArThickness           = LArThickness
         self.LArHeight              = LArHeight
         self.LArLength              = LArLength
 
-        self.VacuumThicknessX       = self.ExtVesselThickness/2 - self.CarbonFiberThickness*2 - self.HoneycombThickness - (self.LArThickness/2 + self.AluminumThickness)
-        self.VacuumThicknessY       = self.ExtVesselThickness/2 - self.CarbonFiberThickness*2 - self.HoneycombThickness - (self.LArHeight/2 + self.AluminumThickness)
-        self.VacuumThicknessZ       = self.ExtVesselThickness/2 - self.CarbonFiberThickness*2 - self.HoneycombThickness - (self.LArLength/2 + self.AluminumThickness)
+        self.VacuumThicknessX       = self.ExtVesselThickness/2 - self.CarbonFiberThickness*2 - self.HoneycombThickness - (self.LArThickness/2 + self.SteelThickness)
+        self.VacuumThicknessY       = self.ExtVesselThickness/2 - self.CarbonFiberThickness*2 - self.HoneycombThickness - (self.LArHeight/2 + self.SteelThickness)
+        self.VacuumThicknessZ       = self.ExtVesselThickness/2 - self.CarbonFiberThickness*2 - self.HoneycombThickness - (self.LArLength/2 + self.SteelThickness)
     
 
     def construct(self, geom):
@@ -62,11 +64,11 @@ class GrainBuilder(gegede.builder.Builder):
                                                                                                 material_thickness = (self.VacuumThicknessX, self.VacuumThicknessY, self.VacuumThicknessZ), 
                                                                                                 material = "Vacuum_cryo")
         
-        InnerVessel_lv     = self.construcElTubeShell(geom, "GRAIN_inner_vessel_lv",            self.LArThickness/2 + self.AluminumThickness,
-                                                                                                self.LArHeight/2    + self.AluminumThickness,
-                                                                                                self.LArLength/2    + self.AluminumThickness,
-                                                                                                material_thickness = self.AluminumThickness,
-                                                                                                material = "Aluminum")   
+        InnerVessel_lv     = self.construcElTubeShell(geom, "GRAIN_inner_vessel_lv",            self.LArThickness/2 + self.SteelThickness,
+                                                                                                self.LArHeight/2    + self.SteelThickness,
+                                                                                                self.LArLength/2    + self.EndcapThickness,
+                                                                                                material_thickness = (self.SteelThickness, self.SteelThickness, self.EndcapThickness),
+                                                                                                material = "Steel")   
         
         LAr_lv             = self.constructElTube(geom,     "GRAIN_LAr_lv",                     self.LArThickness/2, 
                                                                                                 self.LArHeight/2, 

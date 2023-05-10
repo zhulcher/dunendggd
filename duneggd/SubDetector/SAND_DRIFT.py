@@ -69,9 +69,9 @@ class DRIFTBuilder(gegede.builder.Builder):
 
             self.UpstreamSpace4SuperMod     = self.UpstreamSpace4Tracker - self.nofUpstreamTrkMod * self.ModThickness["TrkMod"] 
 
-            self.nofUpstreamSuperMod        = int( (self.UpstreamSpace4SuperMod / self.SuperModThickness).to_base_units().magnitude )
+            self.nofUpstreamSuperMod        = int( (self.UpstreamSpace4SuperMod / (self.SuperModThickness + self.clearenceSupermods)).to_base_units().magnitude )
 
-            self.UpstreamSpaceLeft          = self.UpstreamSpace4Tracker - self.SuperModThickness * self.nofUpstreamSuperMod - self.ModThickness["TrkMod"] * self.nofUpstreamTrkMod
+            self.UpstreamSpaceLeft          = self.UpstreamSpace4Tracker - (self.SuperModThickness + self.clearenceSupermods) * self.nofUpstreamSuperMod - self.ModThickness["TrkMod"] * self.nofUpstreamTrkMod
 
             self.clearenceGRAINTracker     += self.UpstreamSpaceLeft
 
