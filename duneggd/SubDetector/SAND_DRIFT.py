@@ -198,6 +198,8 @@ class DRIFTBuilder(gegede.builder.Builder):
 
         drift_lv    = self.constructBox(geom, "TrkDrift", thickness/2, half_heigth - self.frameThickness, self.kloeVesselHalfDx - self.frameThickness)
 
+        self.FillDriftChamber(geom, drift_lv,"C", nofDriftModules = nofDriftMods, wireAngles = [Q("0deg"),Q("90deg")])
+
         self.placeSubVolume(geom, tracking_lv, frame_lv)
         self.placeSubVolume(geom, tracking_lv, drift_lv)
 
@@ -268,9 +270,11 @@ class DRIFTBuilder(gegede.builder.Builder):
         
         half_thickness, half_length = self.ModThickness[target_type+"Mod"]/2, self.kloeVesselHalfDx - self.frameThickness
 
+        target_material = "Graphite" if target_type == 'C' else "C3H6"
+
         mod_lv                      = self.constructBox(geom, target_type+"Mod"+label, half_thickness, half_heigth, half_length)
 
-        target_lv                   = self.constructBox(geom, target_type+"Target"+label, self.targetThickness[target_type+"Mod"]/2, half_heigth, half_length)
+        target_lv                   = self.constructBox(geom, target_type+"Target"+label, self.targetThickness[target_type+"Mod"]/2, half_heigth, half_length, material=target_material)
 
         DriftChamber_lv             = self.constructBox(geom, target_type+"DriftChamber"+label, self.DriftChamberThickness/2, half_heigth, half_length)
 
@@ -310,6 +314,8 @@ class DRIFTBuilder(gegede.builder.Builder):
                 DriftModule_lv       = self.constructBox(geom, target_type+"DriftModule_"+str(i)+label, self.DriftModuleThickness/2, half_h, half_l, DriftChamberGas)
                 rot_x = Q("0deg")
             
+            DriftModule_lv.params.append(("SensDet","DriftVolume"))
+
             self.FillDriftModule(geom, DriftModule_lv, module_number = i)
 
             self.WiresCounter["DriftChamber"] += self.WiresCounter["DriftModule"]
