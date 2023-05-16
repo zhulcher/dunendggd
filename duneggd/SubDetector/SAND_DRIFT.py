@@ -246,6 +246,7 @@ class DRIFTBuilder(gegede.builder.Builder):
             self.placeSubVolume(geom, SuperMod_lv, C3H6Mod_lv, pos_x = pos_x, label=str(i))
 
         print("")
+        print(f"supermodule dimensions : thickness {half_thickness*2}, heigth {half_heigth*2}, lenght {half_length*2}")
         print(f"{SuperMod_lv.name} nof wires {self.WiresCounter['SuperMod']}")
         
         return SuperMod_lv
