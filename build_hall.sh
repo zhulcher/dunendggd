@@ -25,7 +25,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_HallwayStruct.cfg \
            duneggd/Config/ND_CryoStruct.cfg \
            duneggd/Config/SAND_MAGNET.cfg \
-           duneggd/Config/SAND_INNERVOLOPT2.cfg \
+           duneggd/Config/SAND_INNERVOLOPT1.cfg \
            duneggd/Config/SAND_ECAL.cfg \
            duneggd/Config/SAND_STT/STT1.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
@@ -47,7 +47,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_HallwayStruct.cfg \
            duneggd/Config/ND_CryoStruct.cfg \
            duneggd/Config/SAND_MAGNET.cfg \
-           duneggd/Config/SAND_INNERVOLOPT2.cfg \
+           duneggd/Config/SAND_INNERVOLOPT1.cfg \
            duneggd/Config/SAND_ECAL.cfg \
            duneggd/Config/SAND_STT/STT1.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
@@ -148,7 +148,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_HallwayStruct.cfg \
            duneggd/Config/ND_CryoStruct.cfg \
            duneggd/Config/SAND_MAGNET.cfg \
-           duneggd/Config/SAND_INNERVOLOPT2.cfg \
+           duneggd/Config/SAND_INNERVOLOPT1.cfg \
            duneggd/Config/SAND_ECAL.cfg \
            duneggd/Config/SAND_STT/STT1.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
@@ -406,7 +406,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_Hall_Rock.cfg \
            duneggd/Config/ND_ElevatorStruct.cfg \
            duneggd/Config/SAND_MAGNET.cfg \
-           duneggd/Config/SAND_INNERVOLOPT2.cfg \
+           duneggd/Config/SAND_INNERVOLOPT1.cfg \
            duneggd/Config/SAND_ECAL.cfg \
            duneggd/Config/SAND_STT/STT2.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
@@ -429,7 +429,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_Hall_Rock.cfg \
            duneggd/Config/ND_ElevatorStruct.cfg \
            duneggd/Config/SAND_MAGNET.cfg \
-           duneggd/Config/SAND_INNERVOLOPT2.cfg \
+           duneggd/Config/SAND_INNERVOLOPT1.cfg \
            duneggd/Config/SAND_ECAL.cfg \
            duneggd/Config/SAND_STT/STT3.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
