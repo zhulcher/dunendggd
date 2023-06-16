@@ -27,7 +27,7 @@ class SandECalBuilder(gegede.builder.Builder):
         dz_ec = 0.5 * self.caloThickness
         zpos_ec = self.EndcapZ + 0.5 * self.caloThickness
 
-        #        barrel_shape = geom.shapes.Tubs("kloe_calo_barrel_shape", rmin=self.BarrelRmin, rmax=rmax_barrel, dz=self.BarrelDZ)
+        # barrel_shape = geom.shapes.Tubs("kloe_calo_barrel_shape", rmin=self.BarrelRmin, rmax=rmax_barrel, dz=self.BarrelDZ)
         barrel_shape = geom.shapes.PolyhedraRegular("kloe_calo_barrel_shape",
                                                     numsides=24,
                                                     rmin=self.BarrelRmin,
