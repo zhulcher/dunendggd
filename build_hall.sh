@@ -352,7 +352,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            -w World -o nd_hall_kloe_sttLAr.gdml
 fi
 
-# SAND OPT 1
+# SAND OPT 1 STT1
 if [ $option = "sand_opt1" -o $option = "sand_opt1_STT1" ];
 then
 gegede-cli duneggd/Config/WORLDggd.cfg \
@@ -375,31 +375,8 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            -w World -o SAND_opt1_STT1.gdml
 fi
 
-# SAND OPT 2 STT1
-if [ $option = "all" -o $option = "sand_opt2_STT1" ];
-then
-gegede-cli duneggd/Config/WORLDggd.cfg \
-           duneggd/Config/ND_Hall_Air_Volume.cfg \
-           duneggd/Config/ND_Hall_Rock.cfg \
-           duneggd/Config/ND_ElevatorStruct.cfg \
-           duneggd/Config/SAND_MAGNET.cfg \
-           duneggd/Config/SAND_INNERVOLOPT1.cfg \
-           duneggd/Config/SAND_ECAL.cfg \
-           duneggd/Config/SAND_STT/STT1.cfg \
-           duneggd/Config/SAND_GRAIN.cfg \
-           duneggd/Config/ND_CraneRailStruct1.cfg \
-           duneggd/Config/ND_CraneRailStruct2.cfg \
-           duneggd/Config/ND_HallwayStruct.cfg \
-           duneggd/Config/ND_CryoStruct.cfg \
-           duneggd/Config/ND-GAr/ND-GAr-SPYv3_noTPC.cfg \
-           duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
-           duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
-           duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
-           -w World -o SAND_opt2_STT1.gdml
-fi
-
-# SAND OPT 2 STT2
-if [ $option = "all" -o $option = "sand_opt2_STT2" ];
+# SAND OPT 1 STT2
+if [ $option = "all" -o $option = "sand_opt1_STT2" ];
 then
 gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_Hall_Air_Volume.cfg \
@@ -418,11 +395,11 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
            duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
            duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
-           -w World -o SAND_opt2_STT2.gdml
+           -w World -o SAND_opt1_STT2.gdml
 fi
 
-# SAND OPT 2 STT3
-if [ $option = "all" -o $option = "sand_opt2_STT3" ];
+# SAND OPT 1 STT3
+if [ $option = "all" -o $option = "sand_opt1_STT3" ];
 then
 gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_Hall_Air_Volume.cfg \
@@ -441,10 +418,11 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
            duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
            duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
-           -w World -o SAND_opt2_STT3.gdml
+           -w World -o SAND_opt1_STT3.gdml
 fi
 
-if [ $option = "all" -o $option = "test_sand_drift" ];
+# SAND OPT 1 drift
+if [ $option = "all" -o $option = "sand_drift" ];
 then
 gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_Hall_Air_Volume_Only_SAND.cfg \
@@ -454,7 +432,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/SAND_ECAL.cfg \
            duneggd/Config/SAND_DRIFT_CHAMBER/DRIFT1.cfg \
            duneggd/Config/SAND_GRAIN.cfg \
-           -w World -o test_SAND_DRIFT.gdml
+           -w World -o SAND_DRIFT.gdml
 fi
 
 
