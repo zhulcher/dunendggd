@@ -12,3 +12,5 @@ ArgonCube/geom-test.root
 !ArgonCube/*2x2*
 *.root
 build/*
+scratch/*
+
