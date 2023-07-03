@@ -7,10 +7,10 @@ class LegBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, rmax1=None, rmax2=None, rmin=None, dz1=None, dz2=None, 
-                    material=None, **kwds ):
+                    Material=None, **kwds ):
         self.rmin, self.rmax1, self.rmax2 = (rmin, rmax1, rmax2)
         self.dz1, self.dz2 = (dz1, dz2)
-        self.Material = material
+        self.Material = Material
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):

@@ -8,10 +8,10 @@ class FeedthroughBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, dz1=None, rmax1=None, rmin1=None,
                          dz2=None, rmax2=None, rmin2=None,
-                         material=None, **kwds ):
+                         Material=None, **kwds ):
         self.rmin1, self.rmax1, self.dz1 = (rmin1, rmax1, dz1)
         self.rmin2, self.rmax2, self.dz2 = (rmin2, rmax2, dz2)
-        self.Material = material
+        self.Material = Material
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):

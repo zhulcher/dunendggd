@@ -7,10 +7,10 @@ class InletBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, rmax1=None, rmax2=None, rmin1=None, rmin2=None, 
-                    dz1=None, dz2=None, material=None, shift=None, **kwds ):
+                    dz1=None, dz2=None, Material=None, shift=None, **kwds ):
         self.rmin1, self.rmax1, self.dz1 = (rmin1, rmax1, dz1)
         self.rmin2, self.rmax2, self.dz2 = (rmin2, rmax2, dz2)
-        self.Material = material
+        self.Material = Material
         self.shift = shift
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^

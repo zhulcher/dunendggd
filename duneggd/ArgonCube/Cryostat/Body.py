@@ -7,10 +7,10 @@ import numpy as np
 class BodyBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, material=None, tubrmin=None, tubrmax=None, tubdz=None,
+    def configure( self, Material=None, tubrmin=None, tubrmax=None, tubdz=None,
                     startphi=None, deltaphi=None, Rotation=None, SubBPos=None,
                     dishradius=None, knuckleradius=None, headradius=None, **kwds ):
-        self.Material = material 
+        self.Material = Material 
         self.tubrmin, self.tubrmax, self.tubdz = ( tubrmin, tubrmax, tubdz )
         self.startphi, self.deltaphi = ( startphi, deltaphi )
         self.Rotation = Rotation

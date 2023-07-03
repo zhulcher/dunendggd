@@ -7,10 +7,10 @@ import numpy as np
 class TopBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, dz=None, rmax=None, rmin=None, material=None, 
+    def configure( self, dz=None, rmax=None, rmin=None, Material=None, 
                     shifts=None, positions=None, **kwds ):
         self.rmin, self.rmax, self.dz = (rmin, rmax, dz)
-        self.Material = material
+        self.Material = Material
         self.shifts = shifts
         self.positions = positions
 

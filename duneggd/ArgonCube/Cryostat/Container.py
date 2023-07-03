@@ -8,10 +8,10 @@ class ContainerBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, dz=None, rmax=None, rmin=None,
-                    positions=None, material=None, connectionshifts=None,
+                    positions=None, Material=None, connectionshifts=None,
                     inletshifts=None, legshift=None, **kwds ):
         self.rmin, self.rmax, self.dz = (rmin, rmax, dz)
-        self.Material = material
+        self.Material = Material
         self.positions = positions
         self.connectionshifts = connectionshifts
         self.inletshifts = inletshifts

@@ -11,9 +11,9 @@ class FlangeBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, dz1=None, dz2=None, rmax=None, rmin1=None, rmin2=None,
-                    material=None, positions=None, centersubt=None, ftsubtr=None, **kwds ):
+                    Material=None, positions=None, centersubt=None, ftsubtr=None, **kwds ):
         self.rmin1, self.rmin2, self.rmax, self.dz1, self.dz2 = (rmin1, rmin2, rmax, dz1, dz2)
-        self.Material = material
+        self.Material = Material
         self.centersubt = centersubt
         self.positions = positions
         self.ftsubtr = ftsubtr
