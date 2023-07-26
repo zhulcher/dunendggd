@@ -211,7 +211,8 @@ class Hall2x2AirVolumeBuilder(gegede.builder.Builder):
 
         ArgonCubeCryostat_pla = geom.structure.Placement(self.Surroundings2x2_Builder.name+'_pla',
                                                 volume=Surroundings2x2_lv,
-                                                pos=ArgonCubeCryostat_pos)
+                                                pos=ArgonCubeCryostat_pos,
+                                                rot=geom.structure.Rotation(None,Q("0deg"),Q("180deg"),Q("0deg")))
         
         Vol_lv.placements.append(ArgonCubeCryostat_pla.name) ###???????put this back
 

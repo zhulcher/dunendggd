@@ -1,4 +1,5 @@
 import pyg4ometry
+from math import pi
 
 def add_sens_to_file(inFile, outFile):
 
@@ -40,7 +41,7 @@ def merge_files(inFileArC, inFileMin, outFile):
     lv = reg2.logicalVolumeDict["World0x3f12c30"]
     
     # create physical volume with placement
-    pv = pyg4ometry.geant4.PhysicalVolume([0,0,0],[0,0,-6500], lv, "MINERvA", reg1.logicalVolumeDict["volMinosNDHall"], reg1)
+    pv = pyg4ometry.geant4.PhysicalVolume([0,pi,0],[0,0,6500], lv, "MINERvA", reg1.logicalVolumeDict["volMinosNDHall"], reg1)
     
     reg1.addVolumeRecursive(pv)
     
