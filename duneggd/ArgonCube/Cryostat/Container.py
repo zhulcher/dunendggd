@@ -21,7 +21,7 @@ class ContainerBuilder(gegede.builder.Builder):
     def construct( self, geom ):
         # container
         cont_shape = geom.shapes.Tubs( self.name, rmin=self.rmin, rmax=self.rmax, dz=self.dz )
-        cont_lv = geom.structure.Volume('vol'+cont_shape.name, material=self.Material, shape=cont_shape)
+        cont_lv=geom.structure.Volume( "vol"+cont_shape.name, material=None, shape=None )
         self.add_volume( cont_lv )
 
         # we will handle the connections, inlets, legs seperately

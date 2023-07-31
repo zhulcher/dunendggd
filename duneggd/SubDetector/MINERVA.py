@@ -28,7 +28,7 @@ class MINERVAStandBuilder(gegede.builder.Builder):
                 #   modMuidMat = 'Steel',
                    **kwds):
 
-        self.Material="Air"
+        self.Material=None
         self.BeamMaterial="SSteel304"
         self.OuterBeam=OuterBeam
         self.InnerBeam=InnerBeam
@@ -60,7 +60,7 @@ class MINERVAStandBuilder(gegede.builder.Builder):
                               'dy':  Q('4356.1mm'),
                               'dz':  Q('2011.2mm')}
         
-        main_lv, main_hDim = ltools.main_lv(self, geom, 'Box')
+        main_lv=geom.structure.Volume( "vol"+self.name, material=None, shape=None )
         self.add_volume(main_lv)
 
 

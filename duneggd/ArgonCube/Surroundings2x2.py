@@ -52,7 +52,7 @@ class Surroundings2x2Builder(gegede.builder.Builder):
                                 'dy':   self.Hall['dy'],
                                 'dz':   self.Hall['dz']}
 
-        main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+        main_lv=geom.structure.Volume( "vol"+self.name, material=None, shape=None )
         print('TPCBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)

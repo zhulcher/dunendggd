@@ -27,6 +27,7 @@ def merge_files(inFileArC, inFileMin, outFile):
     ## Want to loop over the logical volumes, and add an auxiliary field to them
     print("Looping over ArC volumes")
     for volname, volume in reg1.logicalVolumeDict.items():
+        if "AssemblyVolume" in str(type(volume)): continue
         aux_tag = pyg4ometry.gdml.Auxiliary("SensDet", volname)
         volume .addAuxiliaryInfo(aux_tag)
 
