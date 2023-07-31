@@ -38,10 +38,10 @@ def merge_files(inFileArC, inFileMin, outFile):
         volume .addAuxiliaryInfo(aux_tag)
 
     print("Merging volumes")
-    lv = reg2.logicalVolumeDict["World0x3f12c30"]
+    lv = reg2.logicalVolumeDict["MINERvA_components"]
     
     # create physical volume with placement
-    pv = pyg4ometry.geant4.PhysicalVolume([0,pi,0],[0,0,6500], lv, "MINERvA", reg1.logicalVolumeDict["volMinosNDHall"], reg1)
+    pv = pyg4ometry.geant4.PhysicalVolume([0,pi,0],[0,0,6548.65], lv, "MINERvA", reg1.logicalVolumeDict["volMinosNDHall"], reg1)
     
     reg1.addVolumeRecursive(pv)
     
@@ -53,7 +53,7 @@ def merge_files(inFileArC, inFileMin, outFile):
 if __name__ == "__main__":
 
     inFileArC = "test.gdml"
-    inFileMin = "minerva.gdml"
+    inFileMin = "minerva_hacked.gdml"
     # outFile   = "Merged2x2MINERvA_test.gdml"    
     outFile   = "test.gdml"  
     merge_files(inFileArC, inFileMin, outFile)
