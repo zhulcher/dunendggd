@@ -12,7 +12,7 @@ Original Author: Z. Hulcher, SLAC
 
 class Hall2x2AirVolumeBuilder(gegede.builder.Builder):
 
-    def configure(self, Hall=None, Entrance1=None, Entrance2=None, Entrance3=None,Position=None, **kwds):
+    def configure(self, Hall=None, Entrance1=None, Entrance2=None, Entrance3=None,Position=None, Surroundings2x2_pos=None, **kwds):
 
         self.Position = Position
         self.Hall = Hall
@@ -23,6 +23,7 @@ class Hall2x2AirVolumeBuilder(gegede.builder.Builder):
         self.halfDimension={'dx':Q('60m')/2+Q('438in')/2,'dy':Q('60m')/2+Q('367in')/2,'dz':Q('165m')/2}
         # self.halfDimension={'dx':self.Hall['dx'],'dy':self.Hall['dy'],'dz':self.Hall['dz']}
         self.Surroundings2x2_Builder= self.get_builder('Surroundings2x2')
+        self.Surroundings2x2_pos = Surroundings2x2_pos
 
     def construct(self, geom):
 
@@ -204,10 +205,10 @@ class Hall2x2AirVolumeBuilder(gegede.builder.Builder):
         # self.add_volume(Vol_lv)
 
         Surroundings2x2_lv = self.Surroundings2x2_Builder.get_volume()
-        pos = [Q('0mm'),Q('0mm'),Q('0mm')]
+        pos = self.Surroundings2x2_pos
 
         ArgonCubeCryostat_pos = geom.structure.Position(self.Surroundings2x2_Builder.name+'_pos',
-                                            pos[0],pos[1],pos[2])
+                                            pos['dx'],pos['dy'],pos['dz'])
 
         ArgonCubeCryostat_pla = geom.structure.Placement(self.Surroundings2x2_Builder.name+'_pla',
                                                 volume=Surroundings2x2_lv,
