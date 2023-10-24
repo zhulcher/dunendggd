@@ -41,7 +41,7 @@ def merge_files(inFileArC, inFileMin, outFile):
     lv = reg2.logicalVolumeDict["World0x3eeb610"]
     
     # create physical volume with placement
-    pv = pyg4ometry.geant4.PhysicalVolume([0,0,0],[0,0,-6805.696], lv, "MINERvA", reg1.logicalVolumeDict["volSurroundings2x2"], reg1)
+    pv = pyg4ometry.geant4.PhysicalVolume([0,0,0],[0,0,-(6805.696+106.934)], lv, "MINERvA", reg1.logicalVolumeDict["volSurroundings2x2"], reg1)
     
     reg1.addVolumeRecursive(pv)
     
