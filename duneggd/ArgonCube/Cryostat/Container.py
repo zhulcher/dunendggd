@@ -21,7 +21,7 @@ class ContainerBuilder(gegede.builder.Builder):
     def construct( self, geom ):
         # container
         cont_shape = geom.shapes.Tubs( self.name, rmin=self.rmin, rmax=self.rmax, dz=self.dz )
-        cont_lv = geom.structure.Volume('vol'+cont_shape.name, material=self.Material, shape=cont_shape)
+        cont_lv=geom.structure.Volume( "vol"+cont_shape.name, material=None, shape=None )
         self.add_volume( cont_lv )
 
         # we will handle the connections, inlets, legs seperately
@@ -60,7 +60,8 @@ class ContainerBuilder(gegede.builder.Builder):
         connZ1 = self.connectionshifts[0]
         connZ2 = self.connectionshifts[3]
         # hard coding here!
-        connR2 = connR - Q('8cm')
+        # very rough
+        connR2 = connR - Q('19cm')
 
         pos = [connR*np.cos(connAng), connR*np.sin(connAng), connZ1]  
         rot1 = Q('90.deg') - connAng
@@ -77,7 +78,7 @@ class ContainerBuilder(gegede.builder.Builder):
         cont_lv.placements.append(conn2_pla.name)
 
         conn3_pos = geom.structure.Position(self.name+conn_lv.name+'3_pos', connR2, Q('0m'), connZ2)     
-        conn3_rot = geom.structure.Rotation(self.name+conn_lv.name+'3_rot', '0.0deg', '-120.0deg', '0.0deg')                            
+        conn3_rot = geom.structure.Rotation(self.name+conn_lv.name+'3_rot', '0.0deg', '-153.0deg', '0.0deg') # Constant roughly measured from CAD
         conn3_pla = geom.structure.Placement(self.name+conn_lv.name+'3_pla', volume=conn_lv, pos=conn3_pos, rot=conn3_rot)
         cont_lv.placements.append(conn3_pla.name)
 

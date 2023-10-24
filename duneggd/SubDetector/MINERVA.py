@@ -28,7 +28,7 @@ class MINERVAStandBuilder(gegede.builder.Builder):
                 #   modMuidMat = 'Steel',
                    **kwds):
 
-        self.Material="Air"
+        self.Material=None
         self.BeamMaterial="SSteel304"
         self.OuterBeam=OuterBeam
         self.InnerBeam=InnerBeam
@@ -60,7 +60,7 @@ class MINERVAStandBuilder(gegede.builder.Builder):
                               'dy':  Q('4356.1mm'),
                               'dz':  Q('2011.2mm')}
         
-        main_lv, main_hDim = ltools.main_lv(self, geom, 'Box')
+        main_lv=geom.structure.Volume( "vol"+self.name, material=None, shape=None )
         self.add_volume(main_lv)
 
 
@@ -203,12 +203,14 @@ class MINERVAStandBuilder(gegede.builder.Builder):
 
 
         sbi=buildabeam(suppillh,self.OuterBeam['dz'],self.InnerBeam['dx'],self.OuterBeam['dx'],self.InnerBeam['dz'],suppillh)
+        self.sbiheight = suppillh + Q('19mm')/2
         sbibase_pos=geom.structure.Position('sbibase_in_sbi_in_'+self.name, Q('0mm'), -suppillh, Q('0mm'))
 
         sidebeam=geom.shapes.Boolean(None,'union',sbi,suppill,sbibase_pos)
         sbi_lv = geom.structure.Volume(None, material=self.BeamMaterial, shape=sidebeam)
 
         sbi1_pos = geom.structure.Position('sbi1_in_'+self.name, 2*self.InnerBeam['dyt']*m.sqrt(3)/2, botBpos[1],-4*self.OuterBeam['dz']-2*self.InnerBeam['dz'])
+        self.sbi1_pos = sbi1_pos
         sbi1_pla = geom.structure.Placement('psbi1_in_'+self.name, volume= sbi_lv, pos = sbi1_pos)
         main_lv.placements.append(sbi1_pla.name)
 

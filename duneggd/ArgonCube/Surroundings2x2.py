@@ -52,19 +52,17 @@ class Surroundings2x2Builder(gegede.builder.Builder):
                                 'dy':   self.Hall['dy'],
                                 'dz':   self.Hall['dz']}
 
-        main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+        main_lv=geom.structure.Volume( "vol"+self.name, material=None, shape=None )
         print('TPCBuilder::construct()')
         print(('main_lv = '+main_lv.name))
         self.add_volume(main_lv)
 
+
         # Build TPCPlane
         pos = [Q('0mm'),Q('0mm'),Q('0mm')]
-        pos1 = [Q('0mm'),Q('0mm'),Q('175in')]
-        pos2 = [Q('0mm'),Q('0mm'),Q('-75in')]
+        pos1 = [Q('0mm'),-self.MinervaStand_builder.sbi1_pos.y + self.MinervaStand_builder.sbiheight - (self.ArgonCubeCryostat_builder.dz+2*self.Base_builder.block['dy']),Q('175in')]
+        pos2 = [Q('0mm'),-self.MinervaStand_builder.sbi1_pos.y + self.MinervaStand_builder.sbiheight - (self.ArgonCubeCryostat_builder.dz+2*self.Base_builder.block['dy']),Q('-75in')]
         
-
-        MinervaStand_lv = self.MinervaStand_builder.get_volume()
-
         MinervaStand_lv = self.MinervaStand_builder.get_volume()
 
         MinervaStand1_pos = geom.structure.Position(None,
@@ -102,7 +100,7 @@ class Surroundings2x2Builder(gegede.builder.Builder):
         main_lv.placements.append(ArgonCubeCryostat_pla.name)
 
         # Build TPCPlane
-        pos = [Q('0mm'),Q('-2200mm'),Q('0mm')]
+        pos = [Q('0mm'),-self.ArgonCubeCryostat_builder.dz-self.Base_builder.block['dy'],Q('0mm')]
 
         Base_lv = self.Base_builder.get_volume()
 
